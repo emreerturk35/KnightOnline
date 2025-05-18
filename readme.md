@@ -6,7 +6,7 @@ We started this project to learn more about how the MMORPG Knight Online works. 
 
 <p align="left">
 The goal of this project is to replicate official client functionality while preserving accuracy and compatibility with the official client.
-We do not intend to introduce features not found in the official client, nor introduce custom behaviour in general. You're very welcome to do so in forks however, but these do not mesh with our design goals and introduce complexity and potentially incompatibility with the official client. Essentially, in the interests of accuracy, we'd like to keep the client's behaviour as close to official as possible, where it makes sense.
+We do not intend to introduce features not found in the official client, nor introduce custom behaviour in general. You're very welcome to do so in forks however, but these do not mesh with our design goals and introduce complexity and potentially incompatibility with the official client. Essgfgsgsin the interests of accuracy, we'd like to keep the client's behaviour as close to official as possible, where it makes sense.
 
 We may deviate in some minor aspects where it makes sense to fix, for example, UI behaviour, or to provide the user with error messages where the client may not officially do so, but these changes do not affect compatibility while improving the user experience.
 Pull requests for such changes will be accepted on a case-by-case basis.
