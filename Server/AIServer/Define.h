@@ -8,6 +8,10 @@
 	1. #define AI_SOCKET_PORT	10020 -> 11020으로 수정됨..
 */
 
+constexpr int USER_DAMAGE_OVERRIDE_GM			= 30'000;
+constexpr int USER_DAMAGE_OVERRIDE_LIMITED_GM	= 0;
+constexpr int USER_DAMAGE_OVERRIDE_TEST_MODE	= 10'000;
+
 //
 //	MAX VALUE DEFINE
 //

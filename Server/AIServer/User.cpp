@@ -144,8 +144,12 @@ void CUser::Attack(int sid, int tid)
 	// 명중이면 //Damage 처리 ----------------------------------------------------------------//
 	nFinalDamage = GetDamage(tid);
 
-	if (m_pMain->m_byTestMode)
-		nFinalDamage = 3000;	// sungyong test
+	if (m_byIsOP == AUTHORITY_MANAGER)
+		nFinalDamage = USER_DAMAGE_OVERRIDE_GM;
+	else if (m_byIsOP == AUTHORITY_LIMITED_MANAGER)
+		nFinalDamage = USER_DAMAGE_OVERRIDE_LIMITED_GM;
+	else if (m_pMain->m_byTestMode)
+		nFinalDamage = USER_DAMAGE_OVERRIDE_TEST_MODE;	// sungyong test
 
 	// Calculate Target HP	 -------------------------------------------------------//
 	short sOldNpcHP = pNpc->m_iHP;
