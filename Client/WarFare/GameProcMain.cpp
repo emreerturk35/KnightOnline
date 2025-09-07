@@ -281,6 +281,11 @@ void CGameProcMain::Init()
 	m_pLightMgr->Release();
 	s_pEng->SetDefaultLight(m_pLightMgr->Light(0), m_pLightMgr->Light(1), m_pLightMgr->Light(2));
 
+	// Reset lighting from previous scenes.
+	// Our scene will setup lighting as needed.
+	for (int i = 0; i < 8; i++)
+		s_lpD3DDev->LightEnable(i, FALSE);
+
 	int i = 0;
 	for (uint32_t resource = IDS_CMD_WHISPER; resource <= IDS_CMD_LOCATION; resource++)
 		s_szCmdMsg[i++] = fmt::format_text_resource(resource);
