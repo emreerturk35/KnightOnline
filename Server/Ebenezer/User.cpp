@@ -11420,12 +11420,12 @@ BOOL CUser::CheckEventLogic(EVENT_DATA* pEventData)
 					bExact = TRUE;
 				break;
 
-			case LOGIC_EXIST_ITEM:
+			case LOGIC_CHECK_EXIST_ITEM:
 				if (CheckExistItem(pLE->m_LogicElseInt[0], pLE->m_LogicElseInt[1]))
 					bExact = TRUE;
 				break;
 
-			case LOGIC_NOEXIST_ITEM:
+			case LOGIC_CHECK_NOEXIST_ITEM:
 				if (!CheckExistItem(pLE->m_LogicElseInt[0], pLE->m_LogicElseInt[1]))
 					bExact = TRUE;
 				break;
@@ -11453,7 +11453,7 @@ BOOL CUser::CheckEventLogic(EVENT_DATA* pEventData)
 				break;
 	//
 	// 비러머글 엑셀 >.<
-			case LOGIC_CHECK_LEVEL:
+			case LOGIC_CHECK_LV:
 				if (m_pUserData->m_bLevel >= pLE->m_LogicElseInt[0]
 					&& m_pUserData->m_bLevel <= pLE->m_LogicElseInt[1])
 					bExact = TRUE;
