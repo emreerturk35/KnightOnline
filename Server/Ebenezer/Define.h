@@ -52,7 +52,8 @@ enum e_LogicCheck
 	LOGIC_CHECK_LEVEL				= 0x0A,
 	LOGIC_NOEXIST_COM_EVENT			= 0x0B,
 	LOGIC_EXIST_COM_EVENT			= 0x0C,
-	LOGIC_CHECK_NOAH				= 0x0D
+	LOGIC_CHECK_NOAH				= 0x0D,
+	LOGIC_NOEXIST_ITEM				= 0x0E,
 };
 
 // 실행관련 define
