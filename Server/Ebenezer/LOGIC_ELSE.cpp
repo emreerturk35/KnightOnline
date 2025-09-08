@@ -148,6 +148,16 @@ void LOGIC_ELSE::Parse_and(char* pBuf)
 		index += ParseSpace(temp, pBuf + index);
 		m_LogicElseInt[i++] = atoi(temp);		// Maximum
 	}
+	else if (0 == strcmp(temp, "CHECK_LV"))
+	{
+		m_LogicElse = LOGIC_CHECK_LV;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Minimum
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Maximum
+	}
 ////////////////////////////////////////////////////////////////////////////
 
 	m_bAnd = TRUE;
