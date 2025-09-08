@@ -148,6 +148,47 @@ void LOGIC_ELSE::Parse_and(char* pBuf)
 		index += ParseSpace(temp, pBuf + index);
 		m_LogicElseInt[i++] = atoi(temp);		// Maximum
 	}
+	else if (0 == strcmp(temp, "CHECK_LV"))
+	{
+		m_LogicElse = LOGIC_CHECK_LV;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Minimum
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Maximum
+	}
+	else if (0 == strcmp(temp, "HOWMUCH_ITEM"))
+	{
+		m_LogicElse = LOGIC_HOWMUCH_ITEM;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Minimum
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Maximum
+	}
+	else if (0 == strcmp(temp, "NOEXIST_COM_EVENT"))
+	{
+		m_LogicElse = LOGIC_NOEXIST_COM_EVENT;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_NATION"))
+	{
+		m_LogicElse = LOGIC_CHECK_NATION;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Nation
+	}
+	else if (0 == strcmp(temp, "EXIST_COM_EVENT"))
+	{
+		m_LogicElse = LOGIC_EXIST_COM_EVENT;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
 ////////////////////////////////////////////////////////////////////////////
 
 	m_bAnd = TRUE;
