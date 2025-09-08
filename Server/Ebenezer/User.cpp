@@ -11479,6 +11479,11 @@ BOOL CUser::CheckEventLogic(EVENT_DATA* pEventData)
 					bExact = TRUE;
 				break;
 
+			case LOGIC_CHECK_NATION:
+				if(m_pUserData->m_bNation == pLE->m_LogicElseInt[0])
+					bExact = TRUE;
+				break;
+
 			default:
 				return FALSE;
 		}
