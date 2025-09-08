@@ -26,8 +26,7 @@ LOGIC_ELSE::LOGIC_ELSE()
 }
 
 LOGIC_ELSE::~LOGIC_ELSE()
-{
-}
+{}
 
 void LOGIC_ELSE::Init()
 {
@@ -171,6 +170,13 @@ void LOGIC_ELSE::Parse_and(char* pBuf)
 	else if (0 == strcmp(temp, "NOEXIST_COM_EVENT"))
 	{
 		m_LogicElse = LOGIC_NOEXIST_COM_EVENT;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "EXIST_COM_EVENT"))
+	{
+		m_LogicElse = LOGIC_EXIST_COM_EVENT;
 
 		index += ParseSpace(temp, pBuf + index);
 		m_LogicElseInt[i++] = atoi(temp);
