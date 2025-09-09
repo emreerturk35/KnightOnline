@@ -230,6 +230,7 @@ CEbenezerDlg::CEbenezerDlg(CWnd* pParent /*=nullptr*/)
 	m_bFirstServerFlag = FALSE;
 	m_bPointCheckFlag = FALSE;
 
+	m_nServerIndex = 0;
 	m_nServerNo = 0;
 	m_nServerGroupNo = 0;
 	m_nServerGroup = 0;
@@ -1486,6 +1487,9 @@ void CEbenezerDlg::LoadConfig()
 		datasourceName, datasourceUser, datasourcePass);
 
 	m_Ini.GetString("AI_SERVER", "IP", "127.0.0.1", m_AIServerIP, _countof(m_AIServerIP));
+
+	// NOTE: officially this is required to be explicitly set, so it defaults to 0 and fails.
+	m_nServerIndex = m_Ini.GetInt("SG_INFO", "SERVER_INDEX", 1);
 
 	m_nCastleCapture = m_Ini.GetInt("CASTLE", "NATION", 1);
 	m_nServerNo = m_Ini.GetInt("ZONE_INFO", "MY_INFO", 1);

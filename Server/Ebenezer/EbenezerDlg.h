@@ -280,6 +280,7 @@ public:
 	// ~패킷 압축에 필요 변수   -------------
 
 	// zone server info
+	int					m_nServerIndex;
 	int					m_nServerNo, m_nServerGroupNo;
 	int					m_nServerGroup;	// server의 번호(0:서버군이 없다, 1:서버1군, 2:서버2군)
 	ServerMap			m_ServerArray;
