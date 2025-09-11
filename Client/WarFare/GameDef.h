@@ -856,7 +856,9 @@ struct __TABLE_PLAYER_LOOKS
 	std::string	szJointFN;		// Joint filename
 	std::string	szAniFN;		// Animation filename
 	std::string	szPartFNs[10];	// Each character part — upper body, lower body, head, arms, legs, hair, cape
-	std::string	szIdk0[3];
+	std::string	szSkinFN;
+	std::string	szChrFN;
+	std::string	szFXPlugFN;
 
 	int			iIdk1;
 

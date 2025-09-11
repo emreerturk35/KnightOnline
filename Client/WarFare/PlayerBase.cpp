@@ -2136,17 +2136,31 @@ void CPlayerBase::DurabilitySet(e_ItemSlot eSlot, int iDurability)
 
 bool CPlayerBase::InitChr(__TABLE_PLAYER_LOOKS* pTbl)
 {
-	if(nullptr == pTbl) return false;
+	if (pTbl == nullptr)
+		return false;
 
 	m_pLooksRef = pTbl;
 
-	m_Chr.JointSet(pTbl->szJointFN);
-	m_Chr.AniCtrlSet(pTbl->szAniFN);
-
-	if(RACE_NPC != m_InfoBase.eRace) // 상,하체 따로 놀 준비..
+	if (!pTbl->szChrFN.empty())
 	{
-		m_Chr.JointPartSet(0, 16, 23); // 하체
-		m_Chr.JointPartSet(1, 1, 15); // 상체
+		__Vector3 vPos = Position();
+		m_Chr.LoadFromFile(pTbl->szChrFN);
+		m_Chr.PosSet(vPos);
+	}
+	else
+	{
+		m_Chr.JointSet(pTbl->szJointFN);
+		m_Chr.AniCtrlSet(pTbl->szAniFN);
+
+		// 상,하체 따로 놀 준비..
+		if (RACE_NPC != m_InfoBase.eRace)
+		{
+			m_Chr.JointPartSet(0, 16, 23); // 하체
+			m_Chr.JointPartSet(1, 1, 15); // 상체
+		}
+
+		if (!pTbl->szFXPlugFN.empty())
+			m_Chr.FXPlugSet(pTbl->szFXPlugFN);
 	}
 
 	return true;
