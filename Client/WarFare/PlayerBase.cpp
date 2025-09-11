@@ -329,11 +329,11 @@ void CPlayerBase::InfoStringSet(const std::string& szInfo, D3DCOLOR crFont)
 	{
 		std::string szFontInfo = fmt::format_text_resource(IDS_FONT_INFO);
 
-		m_pInfoFont = new CDFont(szFontInfo, 12);
-		m_pInfoFont->InitDeviceObjects( s_lpD3DDev );
+		m_pInfoFont = new CDFont(szFontInfo, 12, D3DFONT_BOLD);
+		m_pInfoFont->InitDeviceObjects(s_lpD3DDev);
 		m_pInfoFont->RestoreDeviceObjects();
 	}
-	m_pInfoFont->SetText(szInfo.c_str(), D3DFONT_BOLD); // 폰트에 텍스트 지정.
+	m_pInfoFont->SetText(szInfo, D3DFONT_BOLD); // 폰트에 텍스트 지정.
 	m_pInfoFont->SetFontColor(crFont);
 }
 
