@@ -193,33 +193,19 @@ enum e_NpcType : uint8_t
 	NPC_BATTLE_MONUMENT		= 211
 };
 
+// These control neutrality-related settings client-side, 
+// including whether collision is enabled for other players.
 enum e_ZoneAbilityType
 {
-	// these control neutrality-related settings client-side, 
-	// including whether collision is enabled for other players.
 	ZONE_ABILITY_NEUTRAL				= 0, // Players cannot attack each other, or NPCs. Can walk through players.
 	ZONE_ABILITY_PVP					= 1, // Players can attack each other, and only NPCs from the opposite nation. Cannot walk through players.
-	ZONE_ABILITY_SPECTATOR				= 2, // player is spectating a 1v1 match (ZoneAbilityPVP is sent for the attacker)
-	ZONE_ABILITY_SIEGE_1				= 3, // siege state 1 (unknown)
-	ZONE_ABILITY_SIEGE_2				= 4, // siege state 2/4: if they have 0 NP & this is set, it will not show the message telling them to buy mo	 re.
-	ZONE_ABILITY_SIEGE_3				= 5, // siege state 3 (unknown)
+	ZONE_ABILITY_SPECTATOR				= 2, // Player is spectating a 1v1 match (ZoneAbilityPVP is sent for the attacker)
+	ZONE_ABILITY_SIEGE_TYPE_1			= 3, // siege type 1 (unknown)
+	ZONE_ABILITY_SIEGE_TYPE_2			= 4, // siege type 2/4: if they have 0 NP & this is set, it will not show the message telling them to buy mo	 re.
+	ZONE_ABILITY_SIEGE_TYPE_3			= 5, // Siege type 3 (unknown)
 	ZONE_ABILITY_SIEGE_DISABLED			= 6, // CSW not running
 	ZONE_ABILITY_CAITHAROS_ARENA		= 7, // Players can attack each other (don't seem to be able to anymore?), but not NPCs. Can walk through players.
-	ZONE_ABILITY_SIEGE_PVP_NEUTRAL_NPCS	= 8 // Players can attack each other, but not NPCs. Cannot walk through players.
-};
-
-// TODO: Remove this. It was used by the server unofficially,
-// and is currently still used by the client.
-// Officially the client doesn't need flags like this.
-enum e_ZoneFlags
-{
-	ZF_TRADE_OTHER_NATION	= (1 << 0),
-	ZF_TALK_OTHER_NATION	= (1 << 1),
-	ZF_ATTACK_OTHER_NATION	= (1 << 2),
-	ZF_ATTACK_SAME_NATION	= (1 << 3),
-	ZF_FRIENDLY_NPCS		= (1 << 4),
-	ZF_WAR_ZONE				= (1 << 5),
-	ZF_CLAN_UPDATE			= (1 << 6)  // Joining, disbanding, creating etc.
+	ZONE_ABILITY_PVP_NEUTRAL_NPCS		= 8	 // Players can attack each other, but not NPCs. Cannot walk through players.
 };
 
 enum e_ZoneID
@@ -231,6 +217,8 @@ enum e_ZoneID
 	ZONE_MORADON			= 21,
 	ZONE_DELOS				= 30,
 	ZONE_BIFROST			= 31,
+	ZONE_DESPERATION_ABYSS	= 32,
+	ZONE_HELL_ABYSS			= 33,
 	ZONE_ARENA				= 48,
 	ZONE_CAITHAROS_ARENA	= 55,
 	ZONE_BATTLE				= 101,
