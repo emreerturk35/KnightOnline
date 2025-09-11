@@ -2182,31 +2182,29 @@ bool CGameProcMain::MsgRecv_Chat(Packet& pkt)
 
 
 	// 통역 서비스...           ㅡ,.ㅡ a
-	if( N3_CHAT_NORMAL == eCM || 
-		N3_CHAT_PRIVATE == eCM || 
-		N3_CHAT_SHOUT == eCM )
+	if (N3_CHAT_NORMAL == eCM
+		|| N3_CHAT_PRIVATE == eCM
+		|| N3_CHAT_SHOUT == eCM)
 	{
-		// TEMP(srmeier): this again depends on zoneability and will need to be looked at
-		/*
-		if(eNation != s_pPlayer->m_InfoBase.eNation)
+		if (eNation != s_pPlayer->Nation()
+			&& !s_pPlayer->m_InfoExt.bCanTalkToOtherNation)
 		{
 			CPlayerBase* pTalker = s_pOPMgr->UPCGetByID(iID, false);
 			bool bIamManager = (0 == s_pPlayer->m_InfoBase.iAuthority) ? true : false;
-			bool bTalkerIsManager = (pTalker && 0 == pTalker->m_InfoBase.iAuthority)  ? true : false;
-				
-			if(!(bIamManager || bTalkerIsManager)) // 내가 운영자가 아니고 상대방도 운영자가 아니면
+			bool bTalkerIsManager = (pTalker && 0 == pTalker->m_InfoBase.iAuthority) ? true : false;
+
+			// 내가 운영자가 아니고 상대방도 운영자가 아니면
+			if (!bIamManager
+				&& !bTalkerIsManager)
 			{
-				int i = szChat.find(':');
-				if(i >= 0)
+				int i = static_cast<int>(szChat.find(':'));
+				if (i >= 0)
 				{
-					for(; i < iChatLen; i++)
-					{
-						szChat[i] = '!' + rand()%10; // 이상한 말로 바꾼다..
-					}
+					for (; i < iChatLen; i++)
+						szChat[i] = '!' + rand() % 10; // 이상한 말로 바꾼다..
 				}
 			}
 		}
-		*/
 	}
 	
 	// 풍선말 넣기..
@@ -5698,6 +5696,10 @@ void CGameProcMain::ParseChattingCommand(const std::string& szCmd)
 				// 상거래 중이 아니면..
 				&& !m_pUITransactionDlg->IsVisible())
 			{
+				if (s_pPlayer->Nation() != pOPC->Nation()
+					&& !s_pPlayer->m_InfoExt.bCanTradeWithOtherNation)
+					return;
+
 				std::string szMsg = fmt::format_text_resource(IDS_PERSONAL_TRADE_REQUEST);
 				MsgOutput(pOPC->IDString() + szMsg, 0xffffff00);
 
