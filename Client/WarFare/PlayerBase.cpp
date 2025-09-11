@@ -13,7 +13,6 @@
 #include <N3Base/N3ShapeExtra.h>
 #include <N3Base/N3SndObj.h>
 
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -382,6 +381,8 @@ void CPlayerBase::KnightsInfoSet(int iID, const std::string& szName, int iGrade,
 		szPlug = fmt::format("Item\\ClanAddOn_{:03}_{}.n3cplug",
 			static_cast<int>(m_InfoBase.eRace), iGrade);
 	}
+
+	m_InfoBase.iKnightsID = iID;
 
 	CN3CPlugBase* pPlug = PlugSet(PLUG_POS_KNIGHTS_GRADE, szPlug, nullptr, nullptr);
 	if (pPlug == nullptr)
@@ -1173,9 +1174,11 @@ bool CPlayerBase::Action(e_StateAction eState, bool bLooping, CPlayerBase* pTarg
 		break;
 
 	case PSA_ATTACK:
-		if(pTarget)
+		if (pTarget != nullptr)
 		{
-			if(	pTarget->m_InfoBase.eNation == m_InfoBase.eNation) return false; // 같은 국가이면
+			// 같은 국가이면
+			if (!IsHostileTarget(pTarget))
+				return false;
 			
 			if(	!bNPC && IsMovingNow() )	// 플레이어이고.. 이동중이었으면..
 			{
@@ -1614,7 +1617,9 @@ e_Ani CPlayerBase::JudgeAnimationBreath()
 	{
 		CPlayerBase* pTarget = TargetPointerCheck(false);
 
-		if(pTarget && pTarget->m_InfoBase.eNation != m_InfoBase.eNation) // 타겟이 있고 국가가 다르면..
+		// 타겟이 있고 국가가 다르면..
+		if (pTarget != nullptr
+			&& IsHostileTarget(pTarget))
 		{
 			e_ItemClass eICR = this->ItemClass_RightHand();
 			e_ItemClass eICL = this->ItemClass_LeftHand();
@@ -2563,36 +2568,165 @@ void CPlayerBase::CalcPlug(CN3CPlugBase* pPlug, const __Matrix44* pmtxJoint, __M
 	}
 }
 
-__Vector3	CPlayerBase::Max()
+__Vector3 CPlayerBase::Max()
 {
-	if(m_pShapeExtraRef) 
+	if (m_pShapeExtraRef != nullptr)
 		return m_pShapeExtraRef->Max();
 
-	return m_Chr.Max(); 
+	return m_Chr.Max();
 }
 
-__Vector3	CPlayerBase::Min()
+__Vector3 CPlayerBase::Min()
 {
-	if(m_pShapeExtraRef)
+	if (m_pShapeExtraRef != nullptr)
 		return m_pShapeExtraRef->Min();
-	
+
 	return m_Chr.Min();
 }
 
-__Vector3	CPlayerBase::Center()
+__Vector3 CPlayerBase::Center()
 {
 	__Vector3 vCenter;
 
-	if(m_pShapeExtraRef)
+	if (m_pShapeExtraRef != nullptr)
 	{
-		vCenter = m_pShapeExtraRef->Min() + (m_pShapeExtraRef->Max()-m_pShapeExtraRef->Min())*0.5f;
+		vCenter = m_pShapeExtraRef->Min() + (m_pShapeExtraRef->Max() - m_pShapeExtraRef->Min()) * 0.5f;
 		return vCenter;
 	}
 
-	return (m_Chr.Min() + (m_Chr.Max()-m_Chr.Min())*0.5f);
+	return (m_Chr.Min() + (m_Chr.Max() - m_Chr.Min()) * 0.5f);
 }
 
+bool CPlayerBase::IsHostileTarget(const CPlayerBase* rhs) const
+{
+	if (rhs == nullptr)
+		return false;
 
+	if (rhs == this)
+		return false;
 
+	if (m_InfoBase.iAuthority == AUTHORITY_LIMITED_MANAGER)
+		return false;
 
+	// TODO: Tile support
 
+	switch (GetCurrentZoneAbilityType())
+	{
+		case ZONE_ABILITY_SPECTATOR:
+			if (rhs->PlayerType() == PLAYER_NPC
+				&& rhs->Nation() != NATION_NOTSELECTED)
+				return false;
+
+			return true;
+
+		case ZONE_ABILITY_NEUTRAL:
+			if (m_InfoBase.iKnightsWarEnemyID != 0
+				&& m_InfoBase.iKnightsWarEnemyID == rhs->m_InfoBase.iKnightsID)
+				return true;
+
+			if (PlayerType() != PLAYER_NPC
+				&& rhs->PlayerType() != PLAYER_NPC)
+				return false;
+
+			if (Nation() != NATION_NOTSELECTED)
+			{
+				if (rhs->Nation() != NATION_NOTSELECTED)
+					return false;
+			}
+			else if (rhs->Nation() != NATION_NOTSELECTED)
+			{
+				return false;
+			}
+
+			return true;
+
+		case ZONE_ABILITY_PVP:
+			if (m_InfoBase.iKnightsWarEnemyID != 0
+				&& m_InfoBase.iKnightsWarEnemyID == rhs->m_InfoBase.iKnightsID)
+				return true;
+
+			return Nation() != rhs->Nation();
+
+		case ZONE_ABILITY_PVP_NEUTRAL_NPCS:
+			if (Nation() == rhs->Nation())
+				return false;
+
+			if (PlayerType() == PLAYER_NPC
+				|| rhs->PlayerType() == PLAYER_NPC)
+			{
+				if (Nation() != NATION_NOTSELECTED)
+				{
+					if (rhs->Nation() != NATION_NOTSELECTED)
+						return false;
+				}
+				else
+				{
+					if (rhs->Nation() == NATION_NOTSELECTED)
+						return false;
+				}
+			}
+
+			return true;
+
+		case ZONE_ABILITY_SIEGE_TYPE_1:
+			if (rhs->m_InfoBase.iKnightsID <= 0
+				&& rhs->PlayerType() == PLAYER_NPC)
+			{
+				if (rhs->Nation() != NATION_NOTSELECTED)
+					return false;
+			}
+
+			if (m_InfoBase.iKnightsID > 0
+				&& m_InfoBase.iKnightsID == rhs->m_InfoBase.iKnightsID)
+				return false;
+
+			return true;
+
+		case ZONE_ABILITY_SIEGE_TYPE_2:
+			if (rhs->m_InfoBase.iKnightsID <= 0
+				&& rhs->PlayerType() == PLAYER_NPC
+				&& rhs->Nation() != NATION_NOTSELECTED)
+				return false;
+
+			if (m_InfoBase.iAllianceID > 0)
+			{
+				if (m_InfoBase.iAllianceID == rhs->m_InfoBase.iAllianceID)
+					return false;
+			}
+			else
+			{
+				if (m_InfoBase.iKnightsID > 0
+					&& m_InfoBase.iKnightsID == rhs->m_InfoBase.iKnightsID)
+					return false;
+			}
+
+			return true;
+
+		case ZONE_ABILITY_SIEGE_TYPE_3:
+			return true;
+
+		case ZONE_ABILITY_SIEGE_DISABLED:
+			if (rhs->PlayerType() == PLAYER_NPC
+				&& rhs->Nation() != NATION_NOTSELECTED)
+				return false;
+
+			if (m_InfoBase.iKnightsID > 0
+				&& rhs->m_InfoBase.iKnightsID == m_InfoBase.iKnightsID)
+				return false;
+
+			return true;
+
+		case ZONE_ABILITY_CAITHAROS_ARENA:
+			if (rhs->PlayerType() == PLAYER_NPC
+				&& rhs->Nation() != NATION_NOTSELECTED)
+				return false;
+
+			if (m_InfoBase.iKnightsID > 0
+				&& rhs->m_InfoBase.iKnightsID == m_InfoBase.iKnightsID)
+				return false;
+
+			return true;
+	}
+
+	return true;
+}

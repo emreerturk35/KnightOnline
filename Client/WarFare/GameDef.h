@@ -306,7 +306,6 @@ struct __InfoPlayerOther
 	int			iHair;			// Hair type
 
 	int			iCity;			// Affiliated city
-	int			iKnightsID;		// Clan ID
 	std::string szKnights;		// Clan name
 	int			iKnightsGrade;	// Clan grade
 	int			iKnightsRank;	// Clan ranking
@@ -320,7 +319,6 @@ struct __InfoPlayerOther
 		iFace = 0;
 		iHair = 0;
 		iCity;
-		iKnightsID = 0;
 		szKnights.clear();
 		iKnightsGrade = 0;
 		iKnightsRank = 0;
@@ -392,6 +390,11 @@ struct __InfoPlayerMySelf : public __InfoPlayerOther
 	int					iZoneCur;				// Current zone ID
 	int					iVictoryNation;			// Last war outcome - 0: Draw, 1: El Morad victory, 2: Karus victory
 
+	e_ZoneAbilityType	eZoneAbilityType;
+	bool				bCanTradeWithOtherNation;
+	bool				bCanTalkToOtherNation;
+	int16_t				sZoneTariff;
+
 	void Init()
 	{
 		__InfoPlayerOther::Init();
@@ -443,6 +446,10 @@ struct __InfoPlayerMySelf : public __InfoPlayerOther
 		iZoneInit = 1;
 		iZoneCur = 0;
 		iVictoryNation = -1;
+
+		eZoneAbilityType = ZONE_ABILITY_PVP;
+		bCanTradeWithOtherNation = false;
+		bCanTalkToOtherNation = false;
 	}
 };
 

@@ -595,6 +595,11 @@ enum e_SkillBarOpcode
 	SKILL_DATA_LOAD = 2
 };
 
+enum e_ZoneAbilityOpcode
+{
+	ZONE_ABILITY_UPDATE	= 1
+};
+
 enum ObjectType
 {
 	OBJECT_BIND			= 0,

@@ -1864,6 +1864,8 @@ void CUser::SendMyInfo(int type)
 
 	Send(send_buff, send_index);
 
+	SetZoneAbilityChange(m_pUserData->m_bZone);
+
 	// AI Server쪽으로 정보 전송..
 	int ai_send_index = 0;
 	char ai_send_buff[256] = {};
@@ -2456,6 +2458,9 @@ void CUser::ZoneChange(int zone, float x, float z)
 		//TRACE(_T("ZoneChange - name=%hs\n"), m_pUserData->m_id);
 		SetMaxHp(1);
 	}
+
+	if (m_pUserData->m_bZone != zone)
+		SetZoneAbilityChange(zone);
 
 	m_iZoneIndex = zoneindex;
 	m_pUserData->m_bZone = zone;
@@ -12761,4 +12766,81 @@ int16_t CUser::GetCurrentWeightForClient() const
 int16_t CUser::GetMaxWeightForClient() const
 {
 	return std::min(m_iMaxWeight, SHRT_MAX);
+}
+
+void CUser::SetZoneAbilityChange(int zone)
+{
+	constexpr int16_t TARIFF_BASE = 10;
+
+	char send_buff[128];
+	int send_index = 0;
+	bool bCanTradeWithOtherNation = false, bCanTalkToOtherNation = false;
+	uint8_t byZoneAbilityType = ZONE_ABILITY_NEUTRAL;
+	int16_t sTariff = TARIFF_BASE;
+
+	SetByte(send_buff, WIZ_ZONEABILITY, send_index);
+	SetByte(send_buff, ZONE_ABILITY_UPDATE, send_index);
+
+	if (zone == ZONE_MORADON)
+	{
+		bCanTradeWithOtherNation = true;
+		byZoneAbilityType = ZONE_ABILITY_NEUTRAL;
+		bCanTalkToOtherNation = true;
+	}
+	else if ((zone / 10) == 5
+		&& zone != ZONE_CAITHAROS_ARENA)
+	{
+		bCanTradeWithOtherNation = true;
+		byZoneAbilityType = ZONE_ABILITY_NEUTRAL;
+		bCanTalkToOtherNation = true;
+	}
+	else
+	{
+		switch (zone)
+		{
+			case ZONE_ARENA:
+				bCanTradeWithOtherNation = false;
+				byZoneAbilityType = ZONE_ABILITY_NEUTRAL;
+				bCanTalkToOtherNation = true;
+				break;
+
+			case ZONE_CAITHAROS_ARENA:
+				bCanTradeWithOtherNation = false;
+				byZoneAbilityType = ZONE_ABILITY_CAITHAROS_ARENA;
+				bCanTalkToOtherNation = true;
+				break;
+
+			case ZONE_DESPERATION_ABYSS:
+			case ZONE_HELL_ABYSS:
+				bCanTradeWithOtherNation = false;
+				byZoneAbilityType = ZONE_ABILITY_PVP_NEUTRAL_NPCS;
+				bCanTalkToOtherNation = true;
+				break;
+
+			case ZONE_FRONTIER:
+				bCanTradeWithOtherNation = false;
+				byZoneAbilityType = ZONE_ABILITY_PVP;
+				bCanTalkToOtherNation = false;
+				sTariff = TARIFF_BASE + 10;
+				break;
+
+			case ZONE_DELOS:
+				bCanTradeWithOtherNation = true;
+				byZoneAbilityType = ZONE_ABILITY_SIEGE_DISABLED;
+				bCanTalkToOtherNation = true;
+				break;
+
+			default:
+				bCanTradeWithOtherNation = false;
+				byZoneAbilityType = ZONE_ABILITY_PVP;
+				bCanTalkToOtherNation = false;
+				break;
+		}
+	}
+
+	SetByte(send_buff, bCanTradeWithOtherNation, send_index);
+	SetByte(send_buff, byZoneAbilityType, send_index);
+	SetByte(send_buff, bCanTalkToOtherNation, send_index);
+	SetShort(send_buff, sTariff, send_index);
+	Send(send_buff, send_index);
 }
