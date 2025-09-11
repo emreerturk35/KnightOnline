@@ -3817,7 +3817,7 @@ void CGameProcMain::InitUI()
 	RECT rcCmd = m_pUICmd->GetRegion(); rcCmd.top += 5; // .. 하드 코딩..
 	iX = 0;
 	iY = iH - ((rc.bottom - rc.top) + (rcCmd.bottom - rcCmd.top));
-	CGameProcedure::UIPostData_Read(UI_POST_WND_CHAT, m_pUIChatDlg, iX, iY);
+	UIPostData_Read(UI_POST_WND_CHAT, m_pUIChatDlg, iX, iY);
 	m_pUIChatDlg->SetStyle(UISTYLE_FOCUS_UNABLE | UISTYLE_HIDE_UNABLE);
 	m_pUIChatDlg->SetVisibleWithNoSound(true);
 
@@ -3828,7 +3828,7 @@ void CGameProcMain::InitUI()
 
 	m_pUIMsgDlg->Init(s_pUIMgr);
 	m_pUIMsgDlg->LoadFromFile(pTbl->szMsgOutput);
-	CGameProcedure::UIPostData_Read(UI_POST_WND_INFO, m_pUIMsgDlg, rc.right, rc.top);
+	UIPostData_Read(UI_POST_WND_INFO, m_pUIMsgDlg, rc.right, rc.top);
 	m_pUIMsgDlg->SetStyle(UISTYLE_FOCUS_UNABLE | UISTYLE_HIDE_UNABLE);
 	m_pUIMsgDlg->SetVisibleWithNoSound(true);
 
@@ -3836,6 +3836,10 @@ void CGameProcMain::InitUI()
 	m_pUIMsgDlg2->LoadFromFile(pTbl->szMsgOutput2);
 	m_pUIMsgDlg2->SetStyle(UISTYLE_FOCUS_UNABLE | UISTYLE_HIDE_UNABLE);
 	m_pUIMsgDlg2->SetVisibleWithNoSound(false);
+
+	// Default info box next to chat
+	RECT rcChat = m_pUIChatDlg->GetRegion();
+	m_pUIMsgDlg->SetPos(rcChat.right, rcChat.top);
 
 	// 채팅창과 메시지 창 위치 맞추기..
 	m_pUIChatDlg->MoveOffset(0, -1);
@@ -3885,7 +3889,7 @@ void CGameProcMain::InitUI()
 
 	m_pUIHelp->Init(s_pUIMgr);
 	m_pUIHelp->LoadFromFile(pTbl->szHelp);
-	CGameProcedure::UIPostData_Read(UI_POST_WND_HELP, m_pUIHelp, 0, 0);
+	UIPostData_Read(UI_POST_WND_HELP, m_pUIHelp, 0, 0);
 	rc = m_pUIHelp->GetRegion();
 	iX = (iW - (rc.right - rc.left))/2;
 	iY = (iH - (rc.bottom - rc.top))/2;
@@ -4026,7 +4030,7 @@ void CGameProcMain::InitUI()
 	m_pUIHotKeyDlg->Init(s_pUIMgr);
 	m_pUIHotKeyDlg->LoadFromFile(pTbl->szHotKey);
 	m_pUIHotKeyDlg->SetStyle(UISTYLE_HIDE_UNABLE);
-	CGameProcedure::UIPostData_Read(UI_POST_WND_HOTKEY, m_pUIHotKeyDlg, rc.left, rc.bottom);
+	UIPostData_Read(UI_POST_WND_HOTKEY, m_pUIHotKeyDlg, rc.left, rc.bottom);
 	m_pUIHotKeyDlg->SetVisibleWithNoSound(true); // 무조건 보인다!!!
 	m_pUIHotKeyDlg->InitIconWnd(UIWND_HOTKEY);
 	m_pUIHotKeyDlg->SetUIType(UI_TYPE_ICON_MANAGER);
