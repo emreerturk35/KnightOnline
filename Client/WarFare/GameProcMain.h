@@ -204,6 +204,8 @@ protected:
 	void	MsgRecv_Knigts_Join_Req(Packet& pkt);
 	void	MsgRecv_ItemUpgrade(Packet& pkt);
 
+	void	MsgRecv_ZoneAbility(Packet& pkt);
+
 public:
 	void	ProcessUIKeyInput(bool bEnable = true);
 	bool	OnMouseMove(POINT ptCur, POINT ptPrev);
