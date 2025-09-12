@@ -11121,9 +11121,7 @@ void CUser::ClientEvent(char* pBuf)
 			break;
 
 		case NPC_TELEPORT_GATE:
-#if 0 // TODO:
-			eventid = m_pMain->GetEventTrigger(pNpc->m_tNpcType, pNpc->m_sTrapNumber);
-#endif
+			eventid = m_pMain->GetEventTrigger(pNpc->m_tNpcType, pNpc->m_byTrapNumber);
 			if (eventid == -1)
 				return;
 			break;

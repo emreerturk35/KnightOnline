@@ -531,8 +531,17 @@ BOOL CEbenezerDlg::OnInitDialog()
 	spdlog::info("EbenezerDlg::OnInitDialog: loading SERVER_RESOURCE table");
 	if (!LoadServerResourceTable())
 	{
-		spdlog::error("EbenezerDlg::OnInitDialog: failed to cache BATTLE SERVER_RESOURCE, closing");
+		spdlog::error("EbenezerDlg::OnInitDialog: failed to cache SERVER_RESOURCE, closing");
 		AfxMessageBox(_T("LoadServerResourceTable Load Fail"));
+		AfxPostQuitMessage(0);
+		return FALSE;
+	}
+
+	spdlog::info("EbenezerDlg::OnInitDialog: loading EVENT_TRIGGER table");
+	if (!LoadEventTriggerTable())
+	{
+		spdlog::error("EbenezerDlg::OnInitDialog: failed to cache EVENT_TRIGGER, closing");
+		AfxMessageBox(_T("LoadEventTriggerTable Load Fail"));
 		AfxPostQuitMessage(0);
 		return FALSE;
 	}
@@ -3783,4 +3792,56 @@ C3DMap* CEbenezerDlg::GetMapByID(int iZoneID) const
 	}
 
 	return nullptr;
+}
+
+BOOL CEbenezerDlg::LoadEventTriggerTable()
+{
+	using ModelType = model::EventTrigger;
+
+	EventTriggerMap localMap;
+
+	recordset_loader::Base<ModelType> loader;
+	loader.SetProcessFetchCallback([&](db::ModelRecordSet<ModelType>& recordset)
+	{
+		do
+		{
+			ModelType row = {};
+			recordset.get_ref(row);
+
+			uint32_t key = GetEventTriggerKey(row.NpcType, row.NpcId);
+
+			bool inserted = localMap.insert(std::make_pair(key, row.TriggerNumber)).second;
+			if (!inserted)
+			{
+				spdlog::error("EbenezerDlg::LoadEventTriggerTable: failed to insert into EventTriggerMap [NpcType={} NpcId={}]",
+					row.NpcType, row.NpcId);
+			}
+		}
+		while (recordset.next());
+	});
+
+	if (!loader.Load_AllowEmpty())
+	{
+		ReportTableLoadError(loader.GetError(), __func__);
+		return FALSE;
+	}
+
+	m_EventTriggerMap.swap(localMap);
+	return TRUE;
+}
+
+uint32_t CEbenezerDlg::GetEventTriggerKey(uint8_t byNpcType, uint16_t sTrapNumber) const
+{
+	return (static_cast<uint32_t>(byNpcType) << 16) | sTrapNumber;
+}
+
+int32_t CEbenezerDlg::GetEventTrigger(uint8_t byNpcType, uint16_t sTrapNumber) const
+{
+	uint32_t key = GetEventTriggerKey(byNpcType, sTrapNumber);
+
+	auto itr = m_EventTriggerMap.find(key);
+	if (itr == m_EventTriggerMap.end())
+		return -1;
+
+	return itr->second;
 }
