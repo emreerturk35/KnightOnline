@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "EbenezerDlg.h"
+#include "OperationMessage.h"
 #include "User.h"
 #include "db_resources.h"
 
@@ -2250,6 +2251,13 @@ BOOL CEbenezerDlg::PreTranslateMessage(MSG* pMsg)
 
 			m_AnnounceEdit.SetWindowText(_T(""));
 			UpdateData(FALSE);
+
+			if (chatstr[0] == '+')
+			{
+				OperationMessage opMessage(this, nullptr);
+				opMessage.Process(chatstr);
+				return TRUE;
+			}
 
 			if (_strnicmp("/kill", chatstr, 5) == 0)
 			{
