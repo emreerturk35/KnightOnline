@@ -12486,25 +12486,56 @@ BOOL CUser::CheckItemCount(int itemid, short min, short max)
 	if (pTable == nullptr)
 		return FALSE;
 
-	// Check every slot in this case.....
-	for (int i = 0; i < SLOT_MAX + HAVE_MAX; i++)
+	// Scan the inventory (exclude equipped items).
+	for (int i = SLOT_MAX; i < SLOT_MAX + HAVE_MAX; i++)
 	{
 		if (m_pUserData->m_sItemArray[i].nNum != itemid)
 			continue;
 
 		// Non-countable item.
-		// Let's return false in this case.
 		if (pTable->Countable == 0)
+		{
+			// Caller expected some quantity.
+			// We do have an item already, it's just not stackable, so we should allow it.
+			if (min != 0 || max != 0)
+				return TRUE;
+
+			// This is somewhat of a special case since the item does exist, but this effectively
+			// just restores the old behaviour where non-stackable items always failed this check.
+			// In this case, it only fails when the caller doesn't ask for a specific quantity.
 			return FALSE;
+		}
 
 		// Countable items. Make sure the amount is within the range.
 		if (m_pUserData->m_sItemArray[i].sCount < min
 			|| m_pUserData->m_sItemArray[i].sCount > max)
-			return FALSE;
+		{
+			// This check is a bit wonky, but it's official behaviour.
+			// If the min check failed, the stack size is negative, which is clearly a bad case and
+			// we can fail.
+			// Otherwise, it's probably just intending to detect a misconfiguration here; the caller
+			// typically expects to supply 0 for both min and max at the same time, so it exceeding
+			// the max (implying non-zero) but having a min of 0 seems like a misconfiguration.
+			// At least, that's my best guess for this scenario.
+			if (min == 0)
+				return FALSE;
+
+			// Only bother to enforce the max check if the caller specified it.
+			// Otherwise, it should be ignored.
+			if (max != 0)
+				return FALSE;
+		}
 
 		return TRUE;
 	}
 
+	// Item not found in inventory
+	// Succeed only if we essentially don't require any to exist.
+	if (min == 0
+		|| max == 0)
+		return TRUE;
+
+	// Player doesn't have any; caller expected some quantity.
 	return FALSE;
 }
 
