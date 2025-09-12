@@ -271,7 +271,7 @@ public:
 	char	m_strPermanentChat[1024];
 
 	// ~Yookozuna 2002.12.11 - 갓댐 산타 클로스 --;
-	BOOL	m_bSanta;
+	uint8_t	m_bySanta;
 
 	// 패킷 압축에 필요 변수   -------------only from ai server
 	int					m_CompCount;

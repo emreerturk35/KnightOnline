@@ -163,12 +163,10 @@ bool OperationMessage::Process(const std::string_view command)
 				Santa();
 				break;
 
-#if 0 // TODO
 			case "/angel"_djb2:
 			case "+angel"_djb2:
 				Angel();
 				break;
-#endif
 
 			case "/offsanta"_djb2:
 			case "+offsanta"_djb2:
@@ -571,17 +569,17 @@ void OperationMessage::UnDiscount()
 
 void OperationMessage::Santa()
 {
-	_main->m_bSanta = TRUE;			// Make Motherfucking Santa Claus FLY!!!
+	_main->m_bySanta = 1;		// Make Motherfucking Santa Claus FLY!!!
 }
 
 void OperationMessage::Angel()
 {
-	// TODO
+	_main->m_bySanta = 2;
 }
 
 void OperationMessage::OffSanta()
 {
-	_main->m_bSanta = FALSE;		// SHOOT DOWN Motherfucking Santa Claus!!!
+	_main->m_bySanta = 0;		// SHOOT DOWN Motherfucking Santa Claus!!!
 }
 
 void OperationMessage::LimitBattle()
