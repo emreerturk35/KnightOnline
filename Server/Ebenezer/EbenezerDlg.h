@@ -24,6 +24,7 @@
 #include <shared/logger.h>
 #include <shared/STLMap.h>
 
+#include <unordered_map>
 #include <vector>
 
 #include "resource.h"
@@ -71,6 +72,8 @@ typedef CSTLMap <model::ServerResource>		ServerResourceTableMap;
 typedef CSTLMap <model::StartPosition>		StartPositionTableMap;
 typedef	CSTLMap	<EVENT>						EventMap;
 
+using EventTriggerMap = std::unordered_map<uint32_t, int32_t>;
+
 enum class NameType
 {
 	Account		= 1,
@@ -86,6 +89,9 @@ public:
 		return s_pInstance;
 	}
 
+	uint32_t GetEventTriggerKey(uint8_t byNpcType, uint16_t sTrapNumber) const;
+	int32_t GetEventTrigger(uint8_t byNpcType, uint16_t sTrapNumber) const;
+	BOOL LoadEventTriggerTable();
 	C3DMap* GetMapByID(int iZoneID) const;
 	C3DMap* GetMapByIndex(int iZoneIndex) const;
 	void FlySanta();
@@ -215,6 +221,7 @@ public:
 	ServerResourceTableMap	m_ServerResourceTableMap;
 	StartPositionTableMap	m_StartPositionTableMap;
 	EventMap				m_EventMap;
+	EventTriggerMap			m_EventTriggerMap;
 
 	CKnightsManager			m_KnightsManager;
 
