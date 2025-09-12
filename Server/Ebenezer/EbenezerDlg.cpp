@@ -267,7 +267,7 @@ CEbenezerDlg::CEbenezerDlg(CWnd* pParent /*=nullptr*/)
 	memset(m_strKarusCaptain, 0, sizeof(m_strKarusCaptain));
 	memset(m_strElmoradCaptain, 0, sizeof(m_strElmoradCaptain));
 
-	m_bSanta = FALSE;		// 갓댐 산타!!! >.<
+	m_bySanta = 0;		// 갓댐 산타!!! >.<
 
 	ConnectionManager::Create();
 }
@@ -1580,7 +1580,7 @@ void CEbenezerDlg::UpdateGameTime()
 		SetGameTime();
 
 		//  갓댐 산타!! >.<
-		if (m_bSanta)
+		if (m_bySanta != 0)
 			FlySanta();
 		//
 	}
@@ -3760,6 +3760,7 @@ void CEbenezerDlg::FlySanta()
 	char send_buff[128] = {};
 
 	SetByte(send_buff, WIZ_SANTA, send_index);
+	SetByte(send_buff, m_bySanta, send_index);
 	Send_All(send_buff, send_index);
 }
 
