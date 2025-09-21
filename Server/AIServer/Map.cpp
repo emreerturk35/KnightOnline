@@ -11,9 +11,10 @@
 #include "RoomEvent.h"
 
 #include <shared/globals.h>
+#include <shared/StringConversion.h>
+#include <spdlog/spdlog.h>
 
 #include <filesystem>
-#include <spdlog/spdlog.h>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -539,24 +540,31 @@ BOOL MAP::LoadRoomEvent(int zone_number)
 	if (!pFile.Open(filename, CFile::modeRead))
 		return FALSE;
 
-	length = pFile.GetLength();
-	CArchive in(&pFile, CArchive::load);
+	std::wstring filenameWide = evtPath.wstring();
 
+	length = pFile.GetLength();
+
+	CArchive in(&pFile, CArchive::load);
+	int lineNumber = 0;
 	count = 0;
 
 	while (count < length)
 	{
 		in >> byte;
-		count++;
+		++count;
 
 		if ((char) byte != '\r'
 			&& (char) byte != '\n')
 			buf[index++] = byte;
 
-		if (((char) byte == '\n'
+		if ((char) byte == '\n'
 			|| count == length)
-			&& index > 1)
 		{
+			++lineNumber;
+
+			if (index <= 1)
+				continue;
+
 			buf[index] = (BYTE) 0;
 			t_index = 0;
 
@@ -686,6 +694,12 @@ BOOL MAP::LoadRoomEvent(int zone_number)
 			{
 				if (pEvent == nullptr)
 					goto cancel_event_load;
+			}
+			else if (isalnum(first[0]))
+			{
+				spdlog::warn(
+					"MAP::LoadRoomEvent({}): unhandled opcode '{}' ({}:{})",
+					zone_number, first, WideToUtf8(filenameWide), lineNumber);
 			}
 
 			index = 0;
