@@ -192,6 +192,173 @@ void LOGIC_ELSE::Parse_and(char* pBuf)
 		index += ParseSpace(temp, pBuf + index);
 		m_LogicElseInt[i++] = atoi(temp);
 	}
+#if 0 // TODO
+	else if (0 == strcmp(temp, "CHECK_PROMOTION_ELIGIBLE"))
+	{
+		m_LogicElse = LOGIC_CHECK_PROMOTION_ELIGIBLE;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_MONSTER_CHALLENGE_TIME"))
+	{
+		m_LogicElse = LOGIC_CHECK_MONSTER_CHALLENGE_TIME;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_PPCARD_SERIAL"))
+	{
+		m_LogicElse = LOGIC_CHECK_PPCARD_SERIAL;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_EXIST_EVENT"))
+	{
+		m_LogicElse = LOGIC_CHECK_EXIST_EVENT;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Quest Id
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);		// Quest state
+	}
+	else if (0 == strcmp(temp, "CHECK_ITEMCHANGE_NUM"))
+	{
+		m_LogicElse = LOGIC_CHECK_ITEMCHANGE_NUM;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // This is the number (1~5) indicating which slot was last given in the last exchange (e.g. nExchangeItemNum1..5).
+	}
+	else if (0 == strcmp(temp, "CHECK_NOCLASS"))
+	{
+		m_LogicElse = LOGIC_CHECK_NOCLASS;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Class 1
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Class 2
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Class 3
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Class 4
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Class 5
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Class 6
+	}
+#endif
+	else if (0 == strcmp(temp, "CHECK_LOYALTY"))
+	{
+		m_LogicElse = LOGIC_CHECK_LOYALTY;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Minimum
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Maximum
+	}
+	else if (0 == strcmp(temp, "CHECK_CHIEF"))
+	{
+		m_LogicElse = LOGIC_CHECK_CHIEF;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_NO_CHIEF"))
+	{
+		m_LogicElse = LOGIC_CHECK_NO_CHIEF;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+#if 0 // TODO
+	else if (0 == strcmp(temp, "CHECK_CLAN_GRADE"))
+	{
+		m_LogicElse = LOGIC_CHECK_CLAN_GRADE;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Minimum
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Maximum
+	}
+	else if (0 == strcmp(temp, "CHECK_KNIGHT"))
+	{
+		m_LogicElse = LOGIC_CHECK_KNIGHT;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_MIDDLE_STATUE_NOCAPTURE"))
+	{
+		m_LogicElse = LOGIC_CHECK_MIDDLE_STATUE_NOCAPTURE;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_MIDDLE_STATUE_CAPTURE"))
+	{
+		m_LogicElse = LOGIC_CHECK_MIDDLE_STATUE_CAPTURE;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_EMPTY_SLOT"))
+	{
+		m_LogicElse = LOGIC_CHECK_EMPTY_SLOT;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Required number of empty slots
+	}
+	else if (0 == strcmp(temp, "CHECK_NO_CASTLE"))
+	{
+		m_LogicElse = LOGIC_CHECK_NO_CASTLE;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_CASTLE"))
+	{
+		m_LogicElse = LOGIC_CHECK_CASTLE;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp);
+	}
+	else if (0 == strcmp(temp, "CHECK_MONSTER_CHALLENGE_USERCOUNT"))
+	{
+		m_LogicElse = LOGIC_CHECK_MONSTER_CHALLENGE_USERCOUNT;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Current Forgotten Temple (Monster Challenge) user count
+	}
+	else if (0 == strcmp(temp, "CHECK_STAT_TOTAL"))
+	{
+		m_LogicElse = LOGIC_CHECK_STAT_TOTAL;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Minimum total stat points
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Maximum total stat points
+	}
+	else if (0 == strcmp(temp, "CHECK_SKILL_TOTAL"))
+	{
+		m_LogicElse = LOGIC_CHECK_SKILL_TOTAL;
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Minimum total skill points
+
+		index += ParseSpace(temp, pBuf + index);
+		m_LogicElseInt[i++] = atoi(temp); // Maximum total skill points
+	}
+#endif // 0
 ////////////////////////////////////////////////////////////////////////////
 
 	m_bAnd = TRUE;
