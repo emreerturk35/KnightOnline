@@ -42,7 +42,7 @@ void LOGIC_ELSE::Init()
 
 void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int lineNumber)
 {
-	int index = 0, i = 0;
+	int index = 0, argsToParse = 0;
 	char temp[1024];
 
 	index += ParseSpace(temp, line + index);
@@ -50,318 +50,211 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 	size_t opcode = hashing::djb2::hash(std::string_view(temp));
 	switch (opcode)
 	{
+		// A CHECK_UNDER_WEIGHT
 		case "CHECK_UNDER_WEIGHT"_djb2:
 			m_LogicElse = LOGIC_CHECK_UNDER_WEIGHT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Weight & Empty Slot
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_OVER_WEIGHT
 		case "CHECK_OVER_WEIGHT"_djb2:
 			m_LogicElse = LOGIC_CHECK_OVER_WEIGHT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Weight & Empty Slot
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_SKILL_POINT {skill category} {minimum points} {maximum points}
 		case "CHECK_SKILL_POINT"_djb2:
 			m_LogicElse = LOGIC_CHECK_SKILL_POINT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// SkillPoint
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Below
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Above
+			argsToParse = 3;
 			break;
 
+		// A CHECK_EXIST_ITEM {item ID} {minimum item count}
 		case "CHECK_EXIST_ITEM"_djb2:
 			m_LogicElse = LOGIC_CHECK_EXIST_ITEM;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Item no.
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Item count
+			argsToParse = 2;
 			break;
 
+		// A CHECK_NOEXIST_ITEM {item ID} {minimum item count}
 		case "CHECK_NOEXIST_ITEM"_djb2:
 			m_LogicElse = LOGIC_CHECK_NOEXIST_ITEM;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Item no.
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Item count
+			argsToParse = 2;
 			break;
 
+		// A CHECK_CLASS {class 1} {class 2} {class 3} {class 4} {class 5} {class 6}
 		case "CHECK_CLASS"_djb2:
 			m_LogicElse = LOGIC_CHECK_CLASS;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Class 1
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Class 2
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Class 3
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Class 4
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Class 5
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Class 6
+			argsToParse = 6;
 			break;
 
+		// A CHECK_WEIGHT {item ID} {item count}
 		case "CHECK_WEIGHT"_djb2:
 			m_LogicElse = LOGIC_CHECK_WEIGHT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Weight & Empty Slot
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Weight & Empty Slot
+			argsToParse = 2;
 			break;
 
-		// 비러머글 복권!!!
+		// A CHECK_EDITBOX
 		case "CHECK_EDITBOX"_djb2:
 			m_LogicElse = LOGIC_CHECK_EDITBOX;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A RAND {percentage}
 		case "RAND"_djb2:
 			m_LogicElse = LOGIC_RAND;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Chances of you hitting the jackpot
+			argsToParse = 1;
 			break;
 
+		// A CHECK_NOAH {minimum} {maximum}
 		case "CHECK_NOAH"_djb2:
 			m_LogicElse = LOGIC_CHECK_NOAH;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Minimum
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Maximum
+			argsToParse = 2;
 			break;
-			
+		
+		// A CHECK_LV {minimum} {maximum}
 		case "CHECK_LV"_djb2:
 			m_LogicElse = LOGIC_CHECK_LV;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Minimum
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Maximum
+			argsToParse = 2;
 			break;
 
+		// A HOWMUCH_ITEM {item ID} {minimum} {maximum}
 		case "HOWMUCH_ITEM"_djb2:
 			m_LogicElse = LOGIC_HOWMUCH_ITEM;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Item no.
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Minimum
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Maximum
+			argsToParse = 3;
 			break;
 
+		// A NOEXIST_COM_EVENT {com event ID}
 		case "NOEXIST_COM_EVENT"_djb2:
 			m_LogicElse = LOGIC_NOEXIST_COM_EVENT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1;
 			break;
 
+		// A CHECK_NATION {nation}
 		case "CHECK_NATION"_djb2:
 			m_LogicElse = LOGIC_CHECK_NATION;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Nation
+			argsToParse = 1;
 			break;
 			
+		// A EXIST_COM_EVENT {com event ID}
 		case "EXIST_COM_EVENT"_djb2:
 			m_LogicElse = LOGIC_EXIST_COM_EVENT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1;
 			break;
 
 #if 0 // TODO
+		// A CHECK_PROMOTION_ELIGIBLE
 		case "CHECK_PROMOTION_ELIGIBLE"_djb2:
 			m_LogicElse = LOGIC_CHECK_PROMOTION_ELIGIBLE;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_MONSTER_CHALLENGE_TIME {Forgotten Temple type}
 		case "CHECK_MONSTER_CHALLENGE_TIME"_djb2:
 			m_LogicElse = LOGIC_CHECK_MONSTER_CHALLENGE_TIME;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1;
 			break;
 
+		// A CHECK_PPCARD_SERIAL
 		case "CHECK_PPCARD_SERIAL"_djb2:
 			m_LogicElse = LOGIC_CHECK_PPCARD_SERIAL;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_EXIST_EVENT {quest ID} {quest state}
 		case "CHECK_EXIST_EVENT"_djb2:
 			m_LogicElse = LOGIC_CHECK_EXIST_EVENT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Quest ID
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);		// Quest state
+			argsToParse = 2;
 			break;
 
+		// A CHECK_ITEMCHANGE_NUM {last slot rewarded by exchange - 1..5 [nExchangeItemNum1..5]}
 		case "CHECK_ITEMCHANGE_NUM"_djb2:
 			m_LogicElse = LOGIC_CHECK_ITEMCHANGE_NUM;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Number (1~5) indicating which slot was last given in the last exchange (e.g. nExchangeItemNum1..5).
+			argsToParse = 1;
 			break;
 
+		// A CHECK_NOCLASS {class 1} {class 2} {class 3} {class 4} {class 5} {class 6}
 		case "CHECK_NOCLASS"_djb2:
 			m_LogicElse = LOGIC_CHECK_NOCLASS;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Class 1
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Class 2
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Class 3
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Class 4
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Class 5
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Class 6
+			argsToParse = 6;
 			break;
 #endif
 
+		// A CHECK_LOYALTY {minimum} {maximum}
 		case "CHECK_LOYALTY"_djb2:
 			m_LogicElse = LOGIC_CHECK_LOYALTY;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Minimum
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Maximum
+			argsToParse = 2;
 			break;
 
+		// A CHECK_CHIEF
 		case "CHECK_CHIEF"_djb2:
 			m_LogicElse = LOGIC_CHECK_CHIEF;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_NO_CHIEF
 		case "CHECK_NO_CHIEF"_djb2:
 			m_LogicElse = LOGIC_CHECK_NO_CHIEF;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
 #if 0 // TODO
+		// A CHECK_CLAN_GRADE {minimum} {maximum}
 		case "CHECK_CLAN_GRADE"_djb2:
 			m_LogicElse = LOGIC_CHECK_CLAN_GRADE;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Minimum
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Maximum
+			argsToParse = 2;
 			break;
 
+		// A CHECK_KNIGHT
 		case "CHECK_KNIGHT"_djb2:
 			m_LogicElse = LOGIC_CHECK_KNIGHT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_MIDDLE_STATUE_NOCAPTURE
 		case "CHECK_MIDDLE_STATUE_NOCAPTURE"_djb2:
 			m_LogicElse = LOGIC_CHECK_MIDDLE_STATUE_NOCAPTURE;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_MIDDLE_STATUE_CAPTURE
 		case "CHECK_MIDDLE_STATUE_CAPTURE"_djb2:
 			m_LogicElse = LOGIC_CHECK_MIDDLE_STATUE_CAPTURE;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
+		// A CHECK_EMPTY_SLOT {required number of empty slots}
 		case "CHECK_EMPTY_SLOT"_djb2:
 			m_LogicElse = LOGIC_CHECK_EMPTY_SLOT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Required number of empty slots
+			argsToParse = 1;
 			break;
 
+		// A CHECK_NO_CASTLE
 		case "CHECK_NO_CASTLE"_djb2:
 			m_LogicElse = LOGIC_CHECK_NO_CASTLE;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1;
 			break;
 
+		// A CHECK_CASTLE
 		case "CHECK_CASTLE"_djb2:
 			m_LogicElse = LOGIC_CHECK_CASTLE;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp);
+			argsToParse = 1;
 			break;
 
+		// A CHECK_MONSTER_CHALLENGE_USERCOUNT {current number of users in Forgotten Temple}
 		case "CHECK_MONSTER_CHALLENGE_USERCOUNT"_djb2:
 			m_LogicElse = LOGIC_CHECK_MONSTER_CHALLENGE_USERCOUNT;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Current Forgotten Temple (Monster Challenge) user count
+			argsToParse = 1;
 			break;
 
+		// A CHECK_STAT_TOTAL {minimum} {maximum}
 		case "CHECK_STAT_TOTAL"_djb2:
 			m_LogicElse = LOGIC_CHECK_STAT_TOTAL;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Minimum total stat points
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Maximum total stat points
+			argsToParse = 2;
 			break;
 
+		// A CHECK_SKILL_TOTAL {minimum} {maximum}
 		case "CHECK_SKILL_TOTAL"_djb2:
 			m_LogicElse = LOGIC_CHECK_SKILL_TOTAL;
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Minimum total skill points
-
-			index += ParseSpace(temp, line + index);
-			m_LogicElseInt[i++] = atoi(temp); // Maximum total skill points
+			argsToParse = 2;
 			break;
 #endif // 0
 
@@ -369,7 +262,13 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			spdlog::warn("LOGIC_ELSE::Parse_And: unhandled opcode '{}' ({}:{})", temp, WideToUtf8(filename), lineNumber);
 			break;
 	}
-////////////////////////////////////////////////////////////////////////////
+
+	_ASSERT(argsToParse >= 0 && argsToParse <= MAX_LOGIC_ELSE_INT);
+	for (int i = 0; i < argsToParse; i++)
+	{
+		index += ParseSpace(temp, line + index);
+		m_LogicElseInt[i] = atoi(temp);
+	}
 
 	m_bAnd = TRUE;
 }
