@@ -158,6 +158,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			m_LogicElse = LOGIC_CHECK_PPCARD_SERIAL;
 			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
+#endif
 
 		// A CHECK_EXIST_EVENT {quest ID} {quest state}
 		case "CHECK_EXIST_EVENT"_djb2:
@@ -165,6 +166,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 2;
 			break;
 
+#if 0 // TODO
 		// A CHECK_ITEMCHANGE_NUM {last slot rewarded by exchange - 1..5 [nExchangeItemNum1..5]}
 		case "CHECK_ITEMCHANGE_NUM"_djb2:
 			m_LogicElse = LOGIC_CHECK_ITEMCHANGE_NUM;
@@ -220,6 +222,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			m_LogicElse = LOGIC_CHECK_MIDDLE_STATUE_CAPTURE;
 			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
+#endif
 
 		// A CHECK_EMPTY_SLOT {required number of empty slots}
 		case "CHECK_EMPTY_SLOT"_djb2:
@@ -227,6 +230,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 1;
 			break;
 
+#if 0 // TODO
 		// A CHECK_NO_CASTLE
 		case "CHECK_NO_CASTLE"_djb2:
 			m_LogicElse = LOGIC_CHECK_NO_CASTLE;
@@ -259,7 +263,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 #endif // 0
 
 		default:
-			spdlog::warn("LOGIC_ELSE::Parse_And: unhandled opcode '{}' ({}:{})", temp, WideToUtf8(filename), lineNumber);
+			spdlog::warn("LOGIC_ELSE::Parse_and: unhandled opcode '{}' ({}:{})", temp, WideToUtf8(filename), lineNumber);
 			break;
 	}
 

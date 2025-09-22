@@ -10,6 +10,7 @@
 #include "User.h"
 #include "db_resources.h"
 
+#include <shared/globals.h>
 #include <shared/packets.h>
 #include <spdlog/spdlog.h>
 
@@ -8690,6 +8691,21 @@ int CUser::GetNumberOfEmptySlots() const
 	return emptySlotCount;
 }
 
+bool CUser::CheckExistEvent(int16_t questId, uint8_t questState) const
+{
+	for (const _USER_QUEST& quest : m_pUserData->m_quests)
+	{
+		if (quest.sQuestID != questId)
+			continue;
+
+		// Quest found - state must match
+		return (quest.byQuestState == questState);
+	}
+
+	// Quest not found - only return true if we're checking if it doesn't exist
+	return (questState == QUEST_STATE_NOT_STARTED);
+}
+
 // item 먹을때 비어잇는 슬롯을 찾아야되...
 int CUser::GetEmptySlot(int itemid, int bCountable) const
 {
@@ -11532,6 +11548,11 @@ bool CUser::CheckEventLogic(const EVENT_DATA* pEventData)
 
 			case LOGIC_CHECK_EMPTY_SLOT:
 				if (GetNumberOfEmptySlots() >= pLE->m_LogicElseInt[0])
+					bExact = TRUE;
+				break;
+
+			case LOGIC_CHECK_EXIST_EVENT:
+				if (CheckExistEvent(pLE->m_LogicElseInt[0], pLE->m_LogicElseInt[1]))
 					bExact = TRUE;
 				break;
 
