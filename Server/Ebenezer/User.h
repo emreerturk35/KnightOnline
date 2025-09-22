@@ -282,6 +282,7 @@ public:
 	void Home();
 	void ReportBug(char* pBuf);
 	int GetEmptySlot(int itemid, int bCountable) const;
+	int GetNumberOfEmptySlots() const;
 	void InitType4();
 	void WarehouseProcess(char* pBuf);
 	short GetACDamage(int damage, short tid);
