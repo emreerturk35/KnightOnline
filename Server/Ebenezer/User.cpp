@@ -11479,6 +11479,13 @@ bool CUser::CheckEventLogic(const EVENT_DATA* pEventData)
 					bExact = true;
 				break;
 
+			case LOGIC_CHECK_NOCLASS:
+				if (!CheckClass(
+					pLE->m_LogicElseInt[0], pLE->m_LogicElseInt[1], pLE->m_LogicElseInt[2],
+					pLE->m_LogicElseInt[3], pLE->m_LogicElseInt[4], pLE->m_LogicElseInt[5]))
+					bExact = true;
+				break;
+
 			case LOGIC_CHECK_WEIGHT:
 				if (!CheckWeight(pLE->m_LogicElseInt[0], pLE->m_LogicElseInt[1]))
 					bExact = true;
@@ -11548,12 +11555,17 @@ bool CUser::CheckEventLogic(const EVENT_DATA* pEventData)
 
 			case LOGIC_CHECK_EMPTY_SLOT:
 				if (GetNumberOfEmptySlots() >= pLE->m_LogicElseInt[0])
-					bExact = TRUE;
+					bExact = true;
 				break;
 
 			case LOGIC_CHECK_EXIST_EVENT:
 				if (CheckExistEvent(pLE->m_LogicElseInt[0], pLE->m_LogicElseInt[1]))
-					bExact = TRUE;
+					bExact = true;
+				break;
+
+			case LOGIC_CHECK_NOEXIST_EVENT:
+				if (!CheckExistEvent(pLE->m_LogicElseInt[0], pLE->m_LogicElseInt[1]))
+					bExact = true;
 				break;
 
 			default:
