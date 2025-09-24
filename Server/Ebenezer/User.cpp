@@ -11568,6 +11568,11 @@ bool CUser::CheckEventLogic(const EVENT_DATA* pEventData)
 					bExact = true;
 				break;
 
+			case LOGIC_CHECK_KNIGHT:
+				if (CheckKnight())
+					bExact = true;
+				break;
+
 			default:
 				return false;
 		}
@@ -12623,6 +12628,15 @@ bool CUser::CheckClanGrade(int min, int max) const
 		return false;
 
 	return true;
+}
+
+bool CUser::CheckKnight() const
+{
+	CKnights* pKnights = m_pMain->GetKnightsPtr(m_pUserData->m_bKnights);
+	if (pKnights == nullptr)
+		return false;
+
+	return (pKnights->m_byFlag == KNIGHTS_TYPE);
 }
 
 void CUser::SaveComEvent(int eventid)
