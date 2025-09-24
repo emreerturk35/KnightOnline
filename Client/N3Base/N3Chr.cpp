@@ -1979,13 +1979,10 @@ void CN3Chr::Init()
 
 void CN3Chr::RegenerateCollisionMesh()
 {
-	__Matrix44 mtxInverse;
-	D3DXMatrixInverse(&mtxInverse, nullptr, &m_Matrix);
-
 	FindMinMax();
 
 	if (m_pMeshCollision != nullptr)
-		m_pMeshCollision->CreateCube(Min() * mtxInverse, Max() * mtxInverse);
+		m_pMeshCollision->CreateCube(m_vMin, m_vMax);
 }
 
 void CN3Chr::JointSet(const std::string& szFN)
