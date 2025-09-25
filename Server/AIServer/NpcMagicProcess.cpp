@@ -524,9 +524,9 @@ short CNpcMagicProcess::GetMagicDamage(int tid, int total_hit, int attribute, in
 			bSign = false;
 		}
 
-		damage = (short) (total_hit - (0.7f * total_hit * total_r / 200));
+		damage = static_cast<short>(total_hit - (0.7f * total_hit * total_r / 200));
 		random = myrand(0, damage);
-		damage = (short) (0.7f * (total_hit - (0.9f * total_hit * total_r / 200))) + 0.2f * random;
+		damage = static_cast<short>((0.7f * (total_hit - (0.9f * total_hit * total_r / 200))) + 0.2f * random);
 	}
 	else
 	{

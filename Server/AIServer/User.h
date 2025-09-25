@@ -46,7 +46,7 @@ public:
 	short			m_sZoneIndex;		// 현재 존의 index 번호..
 
 	BYTE	m_bNation;						// 소속국가
-	short	m_sLevel;						// 레벨
+	uint8_t	m_byLevel;						// 레벨
 
 	short	m_sHP;							// HP
 	short	m_sMP;							// MP
@@ -108,7 +108,7 @@ public:
 	void HealMagic();
 	void HealAreaCheck(int rx, int rz);
 
-	void SendAttackSuccess(int tuid, BYTE result, short sDamage, int nHP = 0, short sAttack_type = 1);  // 공격 성공
+	void SendAttackSuccess(int tuid, BYTE result, short sDamage, int nHP = 0, uint8_t sAttack_type = 1);  // 공격 성공
 	void SendMagicAttackResult(int tuid, BYTE result, short sDamage, short sHP = 0);  // 공격 성공
 	void SendHP();												// user의 HP
 	void SendExp(int iExp, int iLoyalty, int tType = 1);

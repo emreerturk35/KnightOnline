@@ -79,7 +79,7 @@ void CUser::Initialize()
 	m_curZone = -1;								// 현재 존
 	m_sZoneIndex = -1;
 	m_bNation = 0;								// 소속국가
-	m_sLevel = 0;								// 레벨
+	m_byLevel = 0;								// 레벨
 	m_sHP = 0;									// HP
 	m_sMP = 0;									// MP
 	m_sSP = 0;									// SP
@@ -173,7 +173,7 @@ void CUser::Attack(int sid, int tid)
 	//	m_dwLastAttackTime = GetTickCount();
 }
 
-void CUser::SendAttackSuccess(int tuid, BYTE result, short sDamage, int nHP, short sAttack_type)
+void CUser::SendAttackSuccess(int tuid, BYTE result, short sDamage, int nHP, uint8_t byAttackType)
 {
 	int send_index = 0;
 	int sid = -1, tid = -1;
@@ -193,7 +193,7 @@ void CUser::SendAttackSuccess(int tuid, BYTE result, short sDamage, int nHP, sho
 	SetShort(buff, tid, send_index);
 	SetShort(buff, sDamage, send_index);
 	SetDWORD(buff, nHP, send_index);
-	SetByte(buff, sAttack_type, send_index);
+	SetByte(buff, byAttackType, send_index);
 
 	//TRACE(_T("User - SendAttackSuccess() : [sid=%d, tid=%d, result=%d], damage=%d, hp = %d\n"), sid, tid, bResult, sDamage, sHP);
 
@@ -386,7 +386,7 @@ void CUser::SetExp(int iNpcExp, int iLoyalty, int iLevel)
 	int nLoyalty = 0;
 	int nLevel = 0;
 	double TempValue = 0;
-	nLevel = iLevel - m_sLevel;
+	nLevel = iLevel - m_byLevel;
 
 	if (nLevel <= -14)
 	{
@@ -477,8 +477,8 @@ void CUser::SetPartyExp(int iNpcExp, int iLoyalty, int iPartyLevel, int iMan)
 	int nPercent = 0, nLevelPercent = 0, nExpPercent = 0;
 	double TempValue = 0;
 
-	TempValue = (double) iPartyLevel / 100.0;
-	nExpPercent = iNpcExp * TempValue;
+	TempValue = iPartyLevel / 100.0;
+	nExpPercent = static_cast<int>(iNpcExp * TempValue);
 
 	//TRACE(_T("$$ User - SetPartyExp Level : %hs, exp=%d->%d, loy=%d->%d, mylevel=%d, iPartyLevel=%d $$\n"), m_strUserID, iNpcExp, nExpPercent, iLoyalty, nLoyalty, m_sLevel, iPartyLevel);
 
@@ -577,7 +577,7 @@ short CUser::GetDamage(int tid, int magicid)
 				Hit = HitB * (pType1->DamageMod / 100.0f);
 			}
 */
-			Hit = HitB * (pType1->DamageMod / 100.0f);
+			Hit = static_cast<short>(HitB * (pType1->DamageMod / 100.0f));
 		}
 		// ARROW HIT!
 		else if (pTable->Type1 == 2)
@@ -608,12 +608,12 @@ short CUser::GetDamage(int tid, int magicid)
 			if (pType2->HitType == 1
 				/*|| pType2->HitType == 2*/)
 			{
-				Hit = m_sHitDamage * (pType2->DamageMod / 100.0f);
+				Hit = static_cast<short>(m_sHitDamage * (pType2->DamageMod / 100.0f));
 			}
 			else
 			{
 //				Hit = (m_sHitDamage - pNpc->m_sDefense) * (pType2->DamageMod / 100.0f);
-				Hit = HitB * (pType2->DamageMod / 100.0f);
+				Hit = static_cast<short>(HitB * (pType2->DamageMod / 100.0f));
 			}
 		}
 	}
@@ -978,8 +978,8 @@ bool CUser::IsOpIDCheck(const char* szName)
 
 void CUser::HealMagic()
 {
-	int region_x = m_curx / VIEW_DIST;
-	int region_z = m_curz / VIEW_DIST;
+	int region_x = static_cast<int>(m_curx / VIEW_DIST);
+	int region_z = static_cast<int>(m_curz / VIEW_DIST);
 
 	MAP* pMap = m_pMain->GetMapByIndex(m_sZoneIndex);
 	if (pMap == nullptr)

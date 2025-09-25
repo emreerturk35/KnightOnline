@@ -307,7 +307,7 @@ void CGameSocket::RecvUserInfo(char* pBuf)
 	pUser->m_curZone = bZone;
 	pUser->m_sZoneIndex = sZoneIndex;
 	pUser->m_bNation = bNation;
-	pUser->m_sLevel = bLevel;
+	pUser->m_byLevel = bLevel;
 	pUser->m_sHP = sHp;
 	pUser->m_sMP = sMp;
 	//pUser->m_sSP = sSp;
@@ -335,7 +335,7 @@ void CGameSocket::RecvUserInfo(char* pBuf)
 	pUserLog = new _USERLOG;
 	pUserLog->t = CTime::GetCurrentTime();
 	pUserLog->byFlag = USER_LOGIN;
-	pUserLog->byLevel = pUser->m_sLevel;
+	pUserLog->byLevel = pUser->m_byLevel;
 	strcpy(pUserLog->strUserID, pUser->m_strUserID);
 	pUser->m_UserLogList.push_back(pUserLog);
 }
@@ -685,7 +685,7 @@ void CGameSocket::RecvUserLogOut(char* pBuf)
 	pUserLog = new _USERLOG;
 	pUserLog->t = CTime::GetCurrentTime();
 	pUserLog->byFlag = USER_LOGOUT;
-	pUserLog->byLevel = pUser->m_sLevel;
+	pUserLog->byLevel = pUser->m_byLevel;
 	strcpy(pUserLog->strUserID, pUser->m_strUserID);
 	pUser->m_UserLogList.push_back(pUserLog);
 
@@ -777,7 +777,7 @@ void CGameSocket::RecvUserUpdate(char* pBuf)
 	if (pUser == nullptr)
 		return;
 
-	if (pUser->m_sLevel < byLevel)		// level up
+	if (pUser->m_byLevel < byLevel)		// level up
 	{
 		pUser->m_sHP = sHP;
 		pUser->m_sMP = sMP;
@@ -791,7 +791,7 @@ void CGameSocket::RecvUserUpdate(char* pBuf)
 		pUser->m_UserLogList.push_back(pUserLog);
 	}
 
-	pUser->m_sLevel = byLevel;
+	pUser->m_byLevel = byLevel;
 	pUser->m_sHitDamage = sDamage;
 	pUser->m_fHitrate = fHitAgi;
 	pUser->m_fAvoidrate = fAvoidAgi;
@@ -973,7 +973,7 @@ void CGameSocket::RecvUserInfoAllData(char* pBuf)
 		pUser->m_curZone = bZone;
 		pUser->m_sZoneIndex = sZoneIndex;
 		pUser->m_bNation = bNation;
-		pUser->m_sLevel = bLevel;
+		pUser->m_byLevel = bLevel;
 		pUser->m_sHP = sHp;
 		pUser->m_sMP = sMp;
 		//pUser->m_sSP = sSp;
