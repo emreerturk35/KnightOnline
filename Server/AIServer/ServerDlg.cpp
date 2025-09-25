@@ -321,6 +321,13 @@ BOOL CServerDlg::OnInitDialog()
 		return FALSE;
 	}
 
+	if (!GetMakeItemGroupTableData())
+	{
+		spdlog::error("ServerDlg::OnInitDialog: failed to load MAKE_ITEM_GROUP, closing server");
+		EndDialog(IDCANCEL);
+		return FALSE;
+	}
+
 	//----------------------------------------------------------------------
 	//	Load NPC Chat Table
 	//----------------------------------------------------------------------
@@ -578,6 +585,19 @@ bool CServerDlg::GetMakeRareItemTableData()
 	}
 
 	spdlog::info("ServerDlg::GetMakeRareItemTableData: MAKE_ITEM_LARECODE loaded");
+	return true;
+}
+
+bool CServerDlg::GetMakeItemGroupTableData()
+{
+	recordset_loader::STLMap loader(m_MakeItemGroupTableMap);
+	if (!loader.Load_ForbidEmpty())
+	{
+		ReportTableLoadError(loader.GetError(), __func__);
+		return false;
+	}
+
+	spdlog::info("ServerDlg::GetMakeItemGroupTableData: MAKE_ITEM_GROUP loaded");
 	return true;
 }
 

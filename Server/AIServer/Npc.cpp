@@ -16,8 +16,10 @@ int surround_z[8] = { 0, -1, -1, -1, 0, 1, 1, 1 };
 int test_id = 1056;
 bool useNpcTrace = false;
 
-constexpr int MAX_MAXWEAPON_CLASSES		= _countof(model::MakeWeapon::Class);
-constexpr int MAX_ITEM_GRADECODE_GRADES	= _countof(model::MakeItemGradeCode::Grade);
+// TODO: Cross-platform helper for these would be ideal (_countof() is MSVC-specific)
+constexpr int MAX_MAKE_WEAPON_CLASS		= sizeof(model::MakeWeapon::Class) / sizeof(model::MakeWeapon::Class[0]);
+constexpr int MAX_ITEM_GRADECODE_GRADE	= sizeof(model::MakeItemGradeCode::Grade) / sizeof(model::MakeItemGradeCode::Grade[0]);
+constexpr int MAX_MAKE_ITEM_GROUP_ITEM	= sizeof(model::MakeItemGroup::Item) / sizeof(model::MakeItemGroup::Item[0]);
 
 #define ATROCITY_ATTACK_TYPE 1				// 선공
 #define TENDER_ATTACK_TYPE	 0				// 후공	
@@ -6442,21 +6444,37 @@ void CNpc::GiveNpcHaveItem(CIOCPort* pIOCP)
 			if (iPer == 0)
 				continue;
 
+			int iItemID = m_pMain->m_NpcItem.m_ppItem[i][j];
+
 			// 우선 기본테이블를 참조하기위해	
 			if (iRandom <= iPer)
 			{
 				// 아이템 생성..
 				if (j == 1)
 				{
-					iMakeItemCode = ItemProdution(m_pMain->m_NpcItem.m_ppItem[i][j]);
-					if (iMakeItemCode == 0)	continue;
+					if (iItemID < 100)
+						iMakeItemCode = ItemProdution(iItemID);
+					else
+						iMakeItemCode = GetItemGroupNumber(iItemID);
+
+					if (iMakeItemCode == 0)
+						continue;
+
+					m_GiveItemList[nCount].sSid = iMakeItemCode;
+					m_GiveItemList[nCount].count = 1;
+				}
+				else if (j == 3)
+				{
+					iMakeItemCode = GetItemGroupNumber(iItemID);
+					if (iMakeItemCode == 0)
+						continue;
 
 					m_GiveItemList[nCount].sSid = iMakeItemCode;
 					m_GiveItemList[nCount].count = 1;
 				}
 				else
 				{
-					m_GiveItemList[nCount].sSid = m_pMain->m_NpcItem.m_ppItem[i][j];
+					m_GiveItemList[nCount].sSid = iItemID;
 
 					// 화살이라면
 					if (COMPARE(m_GiveItemList[nCount].sSid, ARROW_MIN, ARROW_MAX))
@@ -6464,7 +6482,9 @@ void CNpc::GiveNpcHaveItem(CIOCPort* pIOCP)
 					else
 						m_GiveItemList[nCount].count = 1;
 				}
-				nCount++;
+
+				if (++nCount >= NPC_HAVE_ITEM_LIST)
+					break;
 			}
 		}
 	}
@@ -6712,7 +6732,7 @@ void CNpc::ItemWoreOut(int type, int damage)
 }
 
 // 아이템 제작
-int	CNpc::ItemProdution(int item_number)
+int	CNpc::ItemProdution(int item_number) const
 {
 	int iItemNumber = 0, iRandom = 0, i = 0, iItemGrade = 0, iItemLevel = 0;
 	int iDefault = 0, iItemCode = 0, iItemKey = 0, iRand2 = 0, iRand3 = 0, iRand4 = 0, iRand5 = 0;
@@ -6950,7 +6970,7 @@ int	CNpc::ItemProdution(int item_number)
 	return iItemNumber;
 }
 
-int CNpc::GetItemGrade(int item_grade)
+int CNpc::GetItemGrade(int item_grade) const
 {
 	model::MakeItemGradeCode* pItemData = m_pMain->m_MakeGradeItemArray.GetData(item_grade);
 	if (pItemData == nullptr)
@@ -6959,7 +6979,7 @@ int CNpc::GetItemGrade(int item_grade)
 	int iRandom = myrand(1, 1000);
 
 	int iPercent = 0;
-	for (int i = 0; i < MAX_ITEM_GRADECODE_GRADES; i++)
+	for (int i = 0; i < MAX_ITEM_GRADECODE_GRADE; i++)
 	{
 		int iGrade = pItemData->Grade[i];
 		if (iGrade == 0)
@@ -6974,7 +6994,7 @@ int CNpc::GetItemGrade(int item_grade)
 	return 0;
 }
 
-int CNpc::GetWeaponItemCodeNumber(int item_type)
+int CNpc::GetWeaponItemCodeNumber(int item_type) const
 {
 	int iPercent = 0, iItem_level = 0;
 	model::MakeWeapon* pItemData = nullptr;
@@ -6997,7 +7017,7 @@ int CNpc::GetWeaponItemCodeNumber(int item_type)
 
 	int iRandom = myrand(0, 1000);
 
-	for (int i = 0; i < MAX_MAXWEAPON_CLASSES; i++)
+	for (int i = 0; i < MAX_MAKE_WEAPON_CLASS; i++)
 	{
 		if (pItemData->Class[i] == 0)
 			continue;
@@ -7011,7 +7031,7 @@ int CNpc::GetWeaponItemCodeNumber(int item_type)
 	return 0;
 }
 
-int CNpc::GetItemCodeNumber(int level, int item_type)
+int CNpc::GetItemCodeNumber(int level, int item_type) const
 {
 	int iItemCode = 0, iItemType = 0, iPercent = 0;
 	int iItemPercent[3];
@@ -7084,6 +7104,20 @@ int CNpc::GetItemCodeNumber(int level, int item_type)
 	}
 
 	return iItemCode;
+}
+
+int CNpc::GetItemGroupNumber(int groupId) const
+{
+	model::MakeItemGroup* makeItemGroup = m_pMain->m_MakeItemGroupTableMap.GetData(groupId);
+	if (makeItemGroup == nullptr)
+		return 0;
+	
+	int randomSlot = myrand(0, 10000) % MAX_MAKE_ITEM_GROUP_ITEM;
+	if (randomSlot < 0
+		|| randomSlot >= MAX_MAKE_ITEM_GROUP_ITEM)
+		return 0;
+
+	return makeItemGroup->Item[randomSlot];
 }
 
 void CNpc::DurationMagic_4(CIOCPort* pIOCP, float currenttime)
