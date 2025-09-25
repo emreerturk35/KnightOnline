@@ -504,7 +504,6 @@ void MAP::LoadObjectEvent(HANDLE hFile)
 
 bool MAP::LoadRoomEvent(int zone_number)
 {
-	DWORD		length, count;
 	CString		filename;
 	CFile		pFile;
 	BYTE		byte;
@@ -536,11 +535,11 @@ bool MAP::LoadRoomEvent(int zone_number)
 
 	std::wstring filenameWide = evtPath.wstring();
 
-	length = pFile.GetLength();
+	uint64_t length = pFile.GetLength();
 
 	CArchive in(&pFile, CArchive::load);
 	int lineNumber = 0;
-	count = 0;
+	uint64_t count = 0;
 
 	while (count < length)
 	{
@@ -933,12 +932,14 @@ void MAP::InitializeRoom()
 /// \brief Checks if a position is valid for the map
 bool MAP::IsValidPosition(float x, float z) const
 {
-	int mapMaxX = (m_sizeMap.cx-1) * m_fUnitDist;
-	int mapMaxZ = (m_sizeMap.cy-1) * m_fUnitDist;
-	if (x < 0 || x > mapMaxX
-		|| z < 0 || z > mapMaxZ)
-	{
+	int mapMaxX = static_cast<int>((m_sizeMap.cx - 1) * m_fUnitDist);
+	int mapMaxZ = static_cast<int>((m_sizeMap.cy - 1) * m_fUnitDist);
+
+	if (x < 0 || x > mapMaxX)
 		return false;
-	}
+
+	if (z < 0 || z > mapMaxZ)
+		return false;
+
 	return true;
 }

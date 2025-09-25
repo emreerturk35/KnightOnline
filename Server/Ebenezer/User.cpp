@@ -53,8 +53,8 @@ void CUser::Initialize()
 	m_sBodyAc = 0;
 	m_sTotalHit = 0;
 	m_sTotalAc = 0;
-	m_sTotalHitrate = 0;
-	m_sTotalEvasionrate = 0;
+	m_fTotalHitRate = 0;
+	m_fTotalEvasionRate = 0;
 
 	m_sItemMaxHp = 0;
 	m_sItemMaxMp = 0;
@@ -1448,8 +1448,8 @@ void CUser::Attack(char* pBuf)
 //	sid = GetShort(pBuf, index);
 	tid = GetShort(pBuf, index);
 // 비러머글 해킹툴 유저 --;
-	delaytime = GetShort(pBuf, index);
-	distance = GetShort(pBuf, index);
+	delaytime = static_cast<float>(GetShort(pBuf, index));
+	distance = static_cast<float>(GetShort(pBuf, index));
 //
 
 //	delaytime = delaytime / 100.0f;
@@ -1642,8 +1642,8 @@ void CUser::Attack(char* pBuf)
 			SetShort(send_buff, tid, send_index);
 			SetShort(send_buff, m_sTotalHit * m_bAttackAmount / 100, send_index);   // 표시
 			SetShort(send_buff, m_sTotalAc + m_sACAmount, send_index);   // 표시
-			Setfloat(send_buff, m_sTotalHitrate, send_index);
-			Setfloat(send_buff, m_sTotalEvasionrate, send_index);
+			Setfloat(send_buff, m_fTotalHitRate, send_index);
+			Setfloat(send_buff, m_fTotalEvasionRate, send_index);
 			SetShort(send_buff, m_sItemAc, send_index);
 			SetByte(send_buff, m_bMagicTypeLeftHand, send_index);
 			SetByte(send_buff, m_bMagicTypeRightHand, send_index);
@@ -1749,8 +1749,8 @@ void CUser::SendMyInfo(int type)
 			}
 		}
 
-		m_pUserData->m_curx = x;
-		m_pUserData->m_curz = z;
+		m_pUserData->m_curx = static_cast<float>(x);
+		m_pUserData->m_curz = static_cast<float>(z);
 	}
 
 	SetByte(send_buff, WIZ_MYINFO, send_index);
@@ -1882,8 +1882,8 @@ void CUser::SendMyInfo(int type)
 	SetShort(ai_send_buff, m_pUserData->m_sMp, ai_send_index);
 	SetShort(ai_send_buff, m_sTotalHit * m_bAttackAmount / 100, ai_send_index);  // 표시
 	SetShort(ai_send_buff, m_sTotalAc + m_sACAmount, ai_send_index);  // 표시
-	Setfloat(ai_send_buff, m_sTotalHitrate, ai_send_index);
-	Setfloat(ai_send_buff, m_sTotalEvasionrate, ai_send_index);
+	Setfloat(ai_send_buff, m_fTotalHitRate, ai_send_index);
+	Setfloat(ai_send_buff, m_fTotalEvasionRate, ai_send_index);
 
 // Yookozuna
 	SetShort(ai_send_buff, m_sItemAc, ai_send_index);
@@ -2015,7 +2015,7 @@ void CUser::SetMaxHp(int iFlag)
 		return;
 
 	int temp_sta = 0;
-	temp_sta = m_pUserData->m_bSta + m_sItemSta + m_bStaAmount;
+	temp_sta = m_pUserData->m_bSta + m_sItemSta + m_sStaAmount;
 //	if (temp_sta > 255)
 //		temp_sta = 255;
 
@@ -2056,11 +2056,11 @@ void CUser::SetMaxMp()
 		return;
 
 	int temp_intel = 0, temp_sta = 0;
-	temp_intel = m_pUserData->m_bIntel + m_sItemIntel + m_bIntelAmount + 30;
+	temp_intel = m_pUserData->m_bIntel + m_sItemIntel + m_sIntelAmount + 30;
 //	if (temp_intel > 255)
 //		temp_intel = 255;
 
-	temp_sta = m_pUserData->m_bSta + m_sItemSta + m_bStaAmount;
+	temp_sta = m_pUserData->m_bSta + m_sItemSta + m_sStaAmount;
 //	if (temp_sta > 255)
 //		temp_sta = 255;
 
@@ -2161,8 +2161,8 @@ void CUser::Regene(char* pBuf, int magicid)
 			// Frontier Zone...
 			if (m_pUserData->m_bZone > 200)
 			{
-				x = pHomeInfo->FreeZoneX + myrand(0, pHomeInfo->FreeZoneLX);
-				z = pHomeInfo->FreeZoneZ + myrand(0, pHomeInfo->FreeZoneLZ);
+				x = static_cast<float>(pHomeInfo->FreeZoneX + myrand(0, pHomeInfo->FreeZoneLX));
+				z = static_cast<float>(pHomeInfo->FreeZoneZ + myrand(0, pHomeInfo->FreeZoneLZ));
 			}
 //
 			// Battle Zone...
@@ -2175,21 +2175,21 @@ void CUser::Regene(char* pBuf, int magicid)
 				KickOutZoneUser();	// Go back to your own zone!
 				return;
 */
-				x = pHomeInfo->BattleZoneX + myrand(0, pHomeInfo->BattleZoneLX);
-				z = pHomeInfo->BattleZoneZ + myrand(0, pHomeInfo->BattleZoneLZ);
+				x = static_cast<float>(pHomeInfo->BattleZoneX + myrand(0, pHomeInfo->BattleZoneLX));
+				z = static_cast<float>(pHomeInfo->BattleZoneZ + myrand(0, pHomeInfo->BattleZoneLZ));
 // 비러머글 개척존 바꾸어치기 >.<
 				if (m_pUserData->m_bZone == ZONE_SNOW_BATTLE)
 				{
-					x = pHomeInfo->FreeZoneX + myrand(0, pHomeInfo->FreeZoneLX);
-					z = pHomeInfo->FreeZoneZ + myrand(0, pHomeInfo->FreeZoneLZ);
+					x = static_cast<float>(pHomeInfo->FreeZoneX + myrand(0, pHomeInfo->FreeZoneLX));
+					z = static_cast<float>(pHomeInfo->FreeZoneZ + myrand(0, pHomeInfo->FreeZoneLZ));
 				}
 //
 			}
 // 비러머글 뉴존 >.<
 			else if (m_pUserData->m_bZone > 10 && m_pUserData->m_bZone < 20)
 			{
-				x = 527 + myrand(0, 10);
-				z = 543 + myrand(0, 10);
+				x = static_cast<float>(527 + myrand(0, 10));
+				z = static_cast<float>(543 + myrand(0, 10));
 			}
 //
 			// Specific Lands...
@@ -2197,13 +2197,13 @@ void CUser::Regene(char* pBuf, int magicid)
 			{
 				if (m_pUserData->m_bNation == KARUS)
 				{
-					x = pHomeInfo->ElmoZoneX + myrand(0, pHomeInfo->ElmoZoneLX);
-					z = pHomeInfo->ElmoZoneZ + myrand(0, pHomeInfo->ElmoZoneLZ);
+					x = static_cast<float>(pHomeInfo->ElmoZoneX + myrand(0, pHomeInfo->ElmoZoneLX));
+					z = static_cast<float>(pHomeInfo->ElmoZoneZ + myrand(0, pHomeInfo->ElmoZoneLZ));
 				}
 				else if (m_pUserData->m_bNation == ELMORAD)
 				{
-					x = pHomeInfo->KarusZoneX + myrand(0, pHomeInfo->KarusZoneLX);
-					z = pHomeInfo->KarusZoneZ + myrand(0, pHomeInfo->KarusZoneLZ);
+					x = static_cast<float>(pHomeInfo->KarusZoneX + myrand(0, pHomeInfo->KarusZoneLX));
+					z = static_cast<float>(pHomeInfo->KarusZoneZ + myrand(0, pHomeInfo->KarusZoneLZ));
 				}
 				else return;
 			}
@@ -2216,13 +2216,13 @@ void CUser::Regene(char* pBuf, int magicid)
 		{
 			if (m_pUserData->m_bNation == KARUS)
 			{
-				x = pHomeInfo->KarusZoneX + myrand(0, pHomeInfo->KarusZoneLX);
-				z = pHomeInfo->KarusZoneZ + myrand(0, pHomeInfo->KarusZoneLZ);
+				x = static_cast<float>(pHomeInfo->KarusZoneX + myrand(0, pHomeInfo->KarusZoneLX));
+				z = static_cast<float>(pHomeInfo->KarusZoneZ + myrand(0, pHomeInfo->KarusZoneLZ));
 			}
 			else if (m_pUserData->m_bNation == ELMORAD)
 			{
-				x = pHomeInfo->ElmoZoneX + myrand(0, pHomeInfo->ElmoZoneLX);
-				z = pHomeInfo->ElmoZoneZ + myrand(0, pHomeInfo->ElmoZoneLZ);
+				x = static_cast<float>(pHomeInfo->ElmoZoneX + myrand(0, pHomeInfo->ElmoZoneLX));
+				z = static_cast<float>(pHomeInfo->ElmoZoneZ + myrand(0, pHomeInfo->ElmoZoneLZ));
 			}
 			else
 			{
@@ -3030,7 +3030,7 @@ void CUser::SetSlotItemValue()
 			if ((m_pUserData->m_sClass == BERSERKER
 				|| m_pUserData->m_sClass == BLADE))
 	//			m_sItemHit += item_hit * (double) (m_pUserData->m_bstrSkill[PRO_SKILL1] / 60.0);    // 성래씨 요청 ^^;
-				m_sItemHit += item_hit * 0.5f;
+				m_sItemHit += static_cast<short>(item_hit * 0.5f);
 		}
 
 		m_sItemMaxHp += pTable->MaxHpBonus;
@@ -3242,10 +3242,10 @@ short CUser::GetDamage(short tid, int magicid)
 			// Relative hit.
 			else
 			{
-				result = GetHitRate((m_sTotalHitrate / pTUser->m_sTotalEvasionrate) * (pType1->HitRateMod / 100.0f));
+				result = GetHitRate((m_fTotalHitRate / pTUser->m_fTotalEvasionRate) * (pType1->HitRateMod / 100.0f));
 			}
 
-			temp_hit = temp_hit_B * (pType1->DamageMod / 100.0f);
+			temp_hit = static_cast<short>(temp_hit_B * (pType1->DamageMod / 100.0f));
 		}
 		// ARROW HIT!
 		else if (pTable->Type1 == 2)
@@ -3268,21 +3268,21 @@ short CUser::GetDamage(short tid, int magicid)
 			// Relative hit/Arc hit.
 			else
 			{
-				result = GetHitRate((m_sTotalHitrate / pTUser->m_sTotalEvasionrate) * (pType2->HitRateMod / 100.0f));
+				result = GetHitRate((m_fTotalHitRate / pTUser->m_fTotalEvasionRate) * (pType2->HitRateMod / 100.0f));
 			}
 
 			if (pType2->HitType == 1
 				/*|| pType2->HitType == 2*/)
-				temp_hit = m_sTotalHit * m_bAttackAmount * (pType2->DamageMod / 100.0f) / 100;   // 표시
+				temp_hit = static_cast<short>(m_sTotalHit * m_bAttackAmount * (pType2->DamageMod / 100.0f) / 100);   // 표시
 			else
-				temp_hit = temp_hit_B * (pType2->DamageMod / 100.0f);
+				temp_hit = static_cast<short>(temp_hit_B * (pType2->DamageMod / 100.0f));
 		}
 	}
 	// Normal Hit.
 	else
 	{
 		temp_hit = m_sTotalHit * m_bAttackAmount / 100;	// 표시
-		result = GetHitRate(m_sTotalHitrate / pTUser->m_sTotalEvasionrate);
+		result = GetHitRate(m_fTotalHitRate / pTUser->m_fTotalEvasionRate);
 	}
 
 	// 1. Magical item damage....
@@ -3837,8 +3837,8 @@ void CUser::Send2AI_UserUpdateInfo()
 	SetShort(send_buff, m_pUserData->m_sMp, send_index);
 	SetShort(send_buff, m_sTotalHit * m_bAttackAmount / 100, send_index); // 표시
 	SetShort(send_buff, m_sTotalAc + m_sACAmount, send_index);  // 표시
-	Setfloat(send_buff, m_sTotalHitrate, send_index);
-	Setfloat(send_buff, m_sTotalEvasionrate, send_index);
+	Setfloat(send_buff, m_fTotalHitRate, send_index);
+	Setfloat(send_buff, m_fTotalEvasionRate, send_index);
 
 //
 	SetShort(send_buff, m_sItemAc, send_index);
@@ -3861,7 +3861,7 @@ void CUser::SetUserAbility()
 	if (p_TableCoefficient == nullptr)
 		return;
 
-	float hitcoefficient = 0.0f;
+	double hitcoefficient = 0.0;
 	if (m_pUserData->m_sItemArray[RIGHTHAND].nNum != 0)
 	{
 		pItem = m_pMain->m_ItemTableMap.GetData(m_pUserData->m_sItemArray[RIGHTHAND].nNum);
@@ -3905,7 +3905,7 @@ void CUser::SetUserAbility()
 	}
 
 	if (m_pUserData->m_sItemArray[LEFTHAND].nNum != 0
-		&& hitcoefficient == 0.0f)
+		&& hitcoefficient == 0.0)
 	{
 		// 왼손 무기 : 활 적용을 위해
 		pItem = m_pMain->m_ItemTableMap.GetData(m_pUserData->m_sItemArray[LEFTHAND].nNum);
@@ -3926,11 +3926,11 @@ void CUser::SetUserAbility()
 
 	int temp_str = 0, temp_dex = 0;
 
-	temp_str = m_pUserData->m_bStr + m_bStrAmount + m_sItemStr;
+	temp_str = m_pUserData->m_bStr + m_sStrAmount + m_sItemStr;
 //	if (temp_str > 255)
 //		temp_str = 255;
 
-	temp_dex = m_pUserData->m_bDex + m_bDexAmount + m_sItemDex;
+	temp_dex = m_pUserData->m_bDex + m_sDexAmount + m_sItemDex;
 //	if (temp_dex > 255)
 //		temp_dex = 255;
 
@@ -3942,18 +3942,18 @@ void CUser::SetUserAbility()
 */
 	if (bHaveBow)
 	{
-		m_sTotalHit = (short) ((((0.005 * pItem->Damage * (temp_dex + 40)) + (hitcoefficient * pItem->Damage * m_pUserData->m_bLevel * temp_dex)) + 3));
+		m_sTotalHit = static_cast<short>(((0.005 * pItem->Damage * (temp_dex + 40)) + (hitcoefficient * pItem->Damage * m_pUserData->m_bLevel * temp_dex)) + 3);
 	}
 	else
 	{
-		m_sTotalHit = (short) ((((0.005f * m_sItemHit * (temp_str + 40)) + (hitcoefficient * m_sItemHit * m_pUserData->m_bLevel * temp_str)) + 3));
+		m_sTotalHit = static_cast<short>(((0.005f * m_sItemHit * (temp_str + 40)) + (hitcoefficient * m_sItemHit * m_pUserData->m_bLevel * temp_str)) + 3);
 	}
 
 	// 토탈 AC = 테이블 코에피션트 * (레벨 + 아이템 AC + 테이블 4의 AC)
-	m_sTotalAc = (short) (p_TableCoefficient->Armor * (m_sBodyAc + m_sItemAc));
-	m_sTotalHitrate = ((1 + p_TableCoefficient->HitRate * m_pUserData->m_bLevel * temp_dex) * m_sItemHitrate / 100) * (m_bHitRateAmount / 100);
+	m_sTotalAc = static_cast<short>(p_TableCoefficient->Armor * (m_sBodyAc + m_sItemAc));
+	m_fTotalHitRate = static_cast<float>(((1 + p_TableCoefficient->HitRate * m_pUserData->m_bLevel * temp_dex) * m_sItemHitrate / 100) * (m_bHitRateAmount / 100));
 
-	m_sTotalEvasionrate = ((1 + p_TableCoefficient->Evasionrate * m_pUserData->m_bLevel * temp_dex) * m_sItemEvasionrate / 100) * (m_sAvoidRateAmount / 100);
+	m_fTotalEvasionRate = static_cast<float>((1 + p_TableCoefficient->Evasionrate * m_pUserData->m_bLevel * temp_dex) * m_sItemEvasionrate / 100) * (m_sAvoidRateAmount / 100);
 
 	SetMaxHp();
 	SetMaxMp();
@@ -4460,11 +4460,11 @@ void CUser::ItemMove(char* pBuf)
 	SetShort(send_buff, GetMaxWeightForClient(), send_index);
 	SetShort(send_buff, m_iMaxHp, send_index);
 	SetShort(send_buff, m_iMaxMp, send_index);
-	SetShort(send_buff, m_sItemStr + m_bStrAmount, send_index);
-	SetShort(send_buff, m_sItemSta + m_bStaAmount, send_index);
-	SetShort(send_buff, m_sItemDex + m_bDexAmount, send_index);
-	SetShort(send_buff, m_sItemIntel + m_bIntelAmount, send_index);
-	SetShort(send_buff, m_sItemCham + m_bChaAmount, send_index);
+	SetShort(send_buff, m_sItemStr + m_sStrAmount, send_index);
+	SetShort(send_buff, m_sItemSta + m_sStaAmount, send_index);
+	SetShort(send_buff, m_sItemDex + m_sDexAmount, send_index);
+	SetShort(send_buff, m_sItemIntel + m_sIntelAmount, send_index);
+	SetShort(send_buff, m_sItemCham + m_sChaAmount, send_index);
 	SetShort(send_buff, m_bFireR, send_index);
 	SetShort(send_buff, m_bColdR, send_index);
 	SetShort(send_buff, m_bLightningR, send_index);
@@ -5330,7 +5330,7 @@ void CUser::ItemGet(char* pBuf)
 						if (pUser == nullptr)
 							continue;
 
-						money = count * (float) (pUser->m_pUserData->m_bLevel / (float) levelsum);
+						money = static_cast<int>(count * (float) (pUser->m_pUserData->m_bLevel / (float) levelsum));
 						pUser->m_pUserData->m_iGold += money;
 
 						send_index = 0;
@@ -6598,7 +6598,8 @@ bool CUser::ExecuteExchange()
 	model::Item* pTable = nullptr;
 	CUser* pUser = nullptr;
 	DWORD money = 0;
-	short weight = 0, i = 0;
+	short weight = 0;
+	uint8_t i = 0;
 
 	if (m_sExchangeUser < 0
 		|| m_sExchangeUser >= MAX_USER)
@@ -6842,7 +6843,7 @@ void CUser::ClassChange(char* pBuf)
 	{
 		sub_type = GetByte(pBuf, index);
 
-		money = pow((m_pUserData->m_bLevel * 2), 3.4);
+		money = static_cast<int>(pow((m_pUserData->m_bLevel * 2), 3.4));
 		money = (money / 100) * 100;
 
 		if (m_pUserData->m_bLevel < 30)
@@ -7070,8 +7071,8 @@ void CUser::SendUserInfo(char* temp_send, int& index)
 	SetShort(temp_send, m_pUserData->m_sMp, index);
 	SetShort(temp_send, m_sTotalHit * m_bAttackAmount / 100, index);    // 표시
 	SetShort(temp_send, m_sTotalAc + m_sACAmount, index);	// 표시
-	Setfloat(temp_send, m_sTotalHitrate, index);
-	Setfloat(temp_send, m_sTotalEvasionrate, index);
+	Setfloat(temp_send, m_fTotalHitRate, index);
+	Setfloat(temp_send, m_fTotalEvasionRate, index);
 	SetShort(temp_send, m_sPartyIndex, index);
 	SetByte(temp_send, m_pUserData->m_bAuthority, index);
 }
@@ -7337,7 +7338,7 @@ void CUser::Dead()
 void CUser::ItemWoreOut(int type, int damage)
 {
 	model::Item* pTable = nullptr;
-	int worerate = sqrt(damage / 10.0);
+	int worerate = static_cast<int>(sqrt(damage / 10.0));
 	if (worerate == 0)
 		return;
 
@@ -7488,11 +7489,11 @@ void CUser::ItemDurationChange(int slot, int maxvalue, int curvalue, int amount)
 		SetShort(send_buff, GetCurrentWeightForClient(), send_index);
 		SetShort(send_buff, m_iMaxHp, send_index);
 		SetShort(send_buff, m_iMaxMp, send_index);
-		SetShort(send_buff, m_sItemStr + m_bStrAmount, send_index);
-		SetShort(send_buff, m_sItemSta + m_bStaAmount, send_index);
-		SetShort(send_buff, m_sItemDex + m_bDexAmount, send_index);
-		SetShort(send_buff, m_sItemIntel + m_bIntelAmount, send_index);
-		SetShort(send_buff, m_sItemCham + m_bChaAmount, send_index);
+		SetShort(send_buff, m_sItemStr + m_sStrAmount, send_index);
+		SetShort(send_buff, m_sItemSta + m_sStaAmount, send_index);
+		SetShort(send_buff, m_sItemDex + m_sDexAmount, send_index);
+		SetShort(send_buff, m_sItemIntel + m_sIntelAmount, send_index);
+		SetShort(send_buff, m_sItemCham + m_sChaAmount, send_index);
 		SetShort(send_buff, m_bFireR, send_index);
 		SetShort(send_buff, m_bColdR, send_index);
 		SetShort(send_buff, m_bLightningR, send_index);
@@ -7503,8 +7504,8 @@ void CUser::ItemDurationChange(int slot, int maxvalue, int curvalue, int amount)
 		return;
 	}
 
-	curpercent = (curvalue / (double) maxvalue) * 100;
-	beforepercent = ((curvalue + amount) / (double) maxvalue) * 100;
+	curpercent = static_cast<int>((curvalue / (double) maxvalue) * 100);
+	beforepercent = static_cast<int>(((curvalue + amount) / (double) maxvalue) * 100);
 
 	curbasis = curpercent / 5;
 	beforebasis = beforepercent / 5;
@@ -7786,7 +7787,7 @@ void CUser::ItemRepair(char* pBuf)
 	else if (pos == 2)
 		quantity = pTable->Durability - m_pUserData->m_sItemArray[SLOT_MAX + slot].sDuration;
 
-	money = (int) (((pTable->BuyPrice - 10) / 10000.0f) + pow(pTable->BuyPrice, 0.75)) * quantity / (double) durability;
+	money = static_cast<int>((((pTable->BuyPrice - 10) / 10000.0f) + pow(pTable->BuyPrice, 0.75)) * quantity / (double) durability);
 	if (money > m_pUserData->m_iGold)
 		goto fail_return;
 
@@ -7901,11 +7902,11 @@ void CUser::Type4Duration(float currenttime)
 		{
 			m_sDuration7 = 0;
 			m_fStartTime7 = 0.0f;
-			m_bStrAmount = 0;
-			m_bStaAmount = 0;
-			m_bDexAmount = 0;
-			m_bIntelAmount = 0;
-			m_bChaAmount = 0;
+			m_sStrAmount = 0;
+			m_sStaAmount = 0;
+			m_sDexAmount = 0;
+			m_sIntelAmount = 0;
+			m_sChaAmount = 0;
 			buff_type = 7;
 		}
 	}
@@ -8027,23 +8028,23 @@ BYTE CUser::ItemCountChange(int itemid, int type, int amount)
 		if (m_pUserData->m_sItemArray[i].nNum != itemid)
 			continue;
 
-		if (pTable->RequiredDexterity > (m_pUserData->m_bDex + m_sItemDex + m_bDexAmount)
+		if (pTable->RequiredDexterity > (m_pUserData->m_bDex + m_sItemDex + m_sDexAmount)
 			&& pTable->RequiredDexterity != 0)
 			return result;
 
-		if (pTable->RequiredStrength > (m_pUserData->m_bStr + m_sItemStr + m_bStrAmount)
+		if (pTable->RequiredStrength > (m_pUserData->m_bStr + m_sItemStr + m_sStrAmount)
 			&& pTable->RequiredStrength != 0)
 			return result;
 
-		if (pTable->RequiredStamina > (m_pUserData->m_bSta + m_sItemSta + m_bStaAmount)
+		if (pTable->RequiredStamina > (m_pUserData->m_bSta + m_sItemSta + m_sStaAmount)
 			&& pTable->RequiredStamina != 0)
 			return result;
 
-		if (pTable->RequiredIntelligence > (m_pUserData->m_bIntel + m_sItemIntel + m_bIntelAmount)
+		if (pTable->RequiredIntelligence > (m_pUserData->m_bIntel + m_sItemIntel + m_sIntelAmount)
 			&& pTable->RequiredIntelligence != 0)
 			return result;
 
-		if (pTable->RequiredCharisma > (m_pUserData->m_bCha + m_sItemCham + m_bChaAmount)
+		if (pTable->RequiredCharisma > (m_pUserData->m_bCha + m_sItemCham + m_sChaAmount)
 			&& pTable->RequiredCharisma != 0)
 			return result;
 
@@ -8647,11 +8648,11 @@ void CUser::InitType4()
 	m_sMaxHPAmount = 0;
 	m_bHitRateAmount = 100;
 	m_sAvoidRateAmount = 100;
-	m_bStrAmount = 0;
-	m_bStaAmount = 0;
-	m_bDexAmount = 0;
-	m_bIntelAmount = 0;
-	m_bChaAmount = 0;
+	m_sStrAmount = 0;
+	m_sStaAmount = 0;
+	m_sDexAmount = 0;
+	m_sIntelAmount = 0;
+	m_sChaAmount = 0;
 	m_bFireRAmount = 0;
 	m_bColdRAmount = 0;
 	m_bLightningRAmount = 0;
@@ -8965,7 +8966,7 @@ void CUser::AllSkillPointChange()
 	BYTE type = 0;    // 0:돈이 부족, 1:성공, 2:초기화할 스킬이 없을때..
 	char send_buff[128] = {};
 
-	temp_value = pow((m_pUserData->m_bLevel * 2), 3.4);
+	temp_value = static_cast<int>(pow((m_pUserData->m_bLevel * 2), 3.4));
 	temp_value = (temp_value / 100) * 100;
 
 	if (m_pUserData->m_bLevel < 30)	
@@ -9052,7 +9053,7 @@ void CUser::AllPointChange()
 	if (m_pUserData->m_bLevel > 80)
 		goto fail_return;
 
-	temp_money = pow((m_pUserData->m_bLevel * 2), 3.4);
+	temp_money = static_cast<int>(pow((m_pUserData->m_bLevel * 2), 3.4));
 	temp_money = (temp_money / 100) * 100;
 	if (m_pUserData->m_bLevel < 30)
 		temp_money = static_cast<int>(temp_money * 0.4);
@@ -9339,7 +9340,7 @@ void CUser::GoldChange(short tid, int gold)
 					if (pUser == nullptr)
 						continue;
 
-					money = count * (float) (pUser->m_pUserData->m_bLevel / (float) levelsum);
+					money = static_cast<int>(count * (float) (pUser->m_pUserData->m_bLevel / (float) levelsum));
 					pUser->m_pUserData->m_iGold += money;
 
 					// Now the party members...
@@ -12334,11 +12335,11 @@ void CUser::KickOutZoneUser(bool home)
 
 		//TRACE(_T("KickOutZoneUser - user=%hs, regene_event=%d\n"), m_pUserData->m_id, regene_event);
 
-		int delta_x = myrand(0, pRegene->fRegeneAreaX);
-		int delta_z = myrand(0, pRegene->fRegeneAreaZ);
+		int delta_x = myrand(0, static_cast<int>(pRegene->fRegeneAreaX));
+		int delta_z = myrand(0, static_cast<int>(pRegene->fRegeneAreaZ));
 
-		int x = pRegene->fRegenePosX + delta_x;
-		int y = pRegene->fRegenePosZ + delta_z;
+		float x = pRegene->fRegenePosX + delta_x;
+		float y = pRegene->fRegenePosZ + delta_z;
 
 		ZoneChange(pMap->m_nZoneNumber, x, y);
 	}
@@ -12385,13 +12386,13 @@ void CUser::NativeZoneReturn()
 
 	if (m_pUserData->m_bNation == KARUS)
 	{
-		m_pUserData->m_curx = pHomeInfo->KarusZoneX + myrand(0, pHomeInfo->KarusZoneLX);
-		m_pUserData->m_curz = pHomeInfo->KarusZoneZ + myrand(0, pHomeInfo->KarusZoneLZ);
+		m_pUserData->m_curx = static_cast<float>(pHomeInfo->KarusZoneX + myrand(0, pHomeInfo->KarusZoneLX));
+		m_pUserData->m_curz = static_cast<float>(pHomeInfo->KarusZoneZ + myrand(0, pHomeInfo->KarusZoneLZ));
 	}
 	else
 	{
-		m_pUserData->m_curx = pHomeInfo->ElmoZoneX + myrand(0, pHomeInfo->ElmoZoneLX);
-		m_pUserData->m_curz = pHomeInfo->ElmoZoneZ + myrand(0, pHomeInfo->ElmoZoneLZ);
+		m_pUserData->m_curx = static_cast<float>(pHomeInfo->ElmoZoneX + myrand(0, pHomeInfo->ElmoZoneLX));
+		m_pUserData->m_curz = static_cast<float>(pHomeInfo->ElmoZoneZ + myrand(0, pHomeInfo->ElmoZoneLZ));
 	}
 }
 

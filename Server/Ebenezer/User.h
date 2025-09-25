@@ -44,8 +44,8 @@ public:
 
 	short	m_sTotalHit;					// 총 타격공격력	
 	short	m_sTotalAc;						// 총 방어력
-	float	m_sTotalHitrate;				// 총 공격성공 민첩성
-	float	m_sTotalEvasionrate;			// 총 방어 민첩성
+	float	m_fTotalHitRate;				// 총 공격성공 민첩성
+	float	m_fTotalEvasionRate;			// 총 방어 민첩성
 
 	short   m_sItemMaxHp;                   // 아이템 총 최대 HP Bonus
 	short   m_sItemMaxMp;                   // 아이템 총 최대 MP Bonus
@@ -127,11 +127,11 @@ public:
 	short	m_sMaxHPAmount;
 	BYTE	m_bHitRateAmount;
 	short	m_sAvoidRateAmount;
-	BYTE	m_bStrAmount;
-	BYTE	m_bStaAmount;
-	BYTE	m_bDexAmount;
-	BYTE	m_bIntelAmount;
-	BYTE	m_bChaAmount;
+	short	m_sStrAmount;
+	short	m_sStaAmount;
+	short	m_sDexAmount;
+	short	m_sIntelAmount;
+	short	m_sChaAmount;
 	BYTE	m_bFireRAmount;
 	BYTE	m_bColdRAmount;
 	BYTE	m_bLightningRAmount;

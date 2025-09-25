@@ -2117,15 +2117,15 @@ bool CServerDlg::AddObjectEventNpc(_OBJECT_EVENT* pEvent, int zone_number)
 
 	pNpc->m_sCurZone = zone_number;
 
-	pNpc->m_byGateOpen = pEvent->sStatus;
+	pNpc->m_byGateOpen = static_cast<uint8_t>(pEvent->sStatus);
 	pNpc->m_fCurX = pEvent->fPosX;
 	pNpc->m_fCurY = pEvent->fPosY;
 	pNpc->m_fCurZ = pEvent->fPosZ;
 
-	pNpc->m_nInitMinX = pEvent->fPosX - 1;
-	pNpc->m_nInitMinY = pEvent->fPosZ - 1;
-	pNpc->m_nInitMaxX = pEvent->fPosX + 1;
-	pNpc->m_nInitMaxY = pEvent->fPosZ + 1;
+	pNpc->m_nInitMinX = static_cast<int>(pEvent->fPosX - 1);
+	pNpc->m_nInitMinY = static_cast<int>(pEvent->fPosZ - 1);
+	pNpc->m_nInitMaxX = static_cast<int>(pEvent->fPosX + 1);
+	pNpc->m_nInitMaxY = static_cast<int>(pEvent->fPosZ + 1);
 
 	pNpc->m_sRegenTime = 10000 * 1000;	// 초(DB)단위-> 밀리세컨드로
 	//pNpc->m_sRegenTime		= 30 * 1000;	// 초(DB)단위-> 밀리세컨드로
