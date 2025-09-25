@@ -61,6 +61,7 @@ typedef CSTLMap <model::MagicType3>			MagicType3TableMap;
 typedef CSTLMap	<model::MagicType4>			MagicType4TableMap;
 typedef CSTLMap	<model::MagicType7>			MagicType7TableMap;
 typedef CSTLMap <_PARTY_GROUP>				PartyMap;
+typedef CSTLMap <model::MakeItemGroup>		MakeItemGroupMap;
 typedef CSTLMap <model::MakeWeapon>			MakeWeaponTableMap;
 typedef CSTLMap <model::MakeItemGradeCode>	MakeGradeItemCodeTableMap;
 typedef CSTLMap <model::MakeItemRareCode>	MakeItemRareCodeTableMap;
@@ -145,6 +146,7 @@ public:
 	MagicType3TableMap			m_MagicType3TableMap;
 	MagicType4TableMap			m_MagicType4TableMap;
 	MagicType7TableMap			m_MagicType7TableMap;
+	MakeItemGroupMap			m_MakeItemGroupTableMap;
 	MakeWeaponTableMap			m_MakeWeaponTableMap;
 	MakeWeaponTableMap			m_MakeDefensiveTableMap;
 	MakeGradeItemCodeTableMap	m_MakeGradeItemArray;
@@ -243,6 +245,7 @@ private:
 	bool GetMakeDefensiveItemTableData();
 	bool GetMakeGradeItemTableData();
 	bool GetMakeRareItemTableData();
+	bool GetMakeItemGroupTableData();
 	bool MapFileLoad();
 	void GetServerInfoIni();
 

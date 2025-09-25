@@ -9,12 +9,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "iocport.h"
-#include "./N3Base/My_3DStruct.h"
+#include "Iocport.h"
 #include "Map.h"
 #include "PathFind.h"
-#include "user.h"
+#include "User.h"
 #include "NpcMagicProcess.h"
+
+#include <N3Base/My_3DStruct.h>
 
 #define MAX_MAP_SIZE		10000
 #define MAX_PATH_SIZE		100
@@ -472,10 +473,11 @@ public:
 	void HpChange(CIOCPort* pIOCP);
 	void MSpChange(int type, int amount);
 	void ItemWoreOut(int type, int damage);
-	int	 ItemProdution(int item_number);
-	int  GetItemGrade(int item_grade);
-	int  GetItemCodeNumber(int level, int item_type);
-	int  GetWeaponItemCodeNumber(int item_type);
+	int	 ItemProdution(int item_number) const;
+	int  GetItemGrade(int item_grade) const;
+	int  GetItemCodeNumber(int level, int item_type) const;
+	int  GetWeaponItemCodeNumber(int item_type) const;
+	int  GetItemGroupNumber(int groupId) const;
 	void DurationMagic_4(CIOCPort* pIOCP, float currenttime);
 	void DurationMagic_3(CIOCPort* pIOCP, float currenttime);
 	void ChangeMonsterInfo(int iChangeType);
