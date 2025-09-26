@@ -146,6 +146,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			m_LogicElse = LOGIC_CHECK_PROMOTION_ELIGIBLE;
 			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
+#endif
 
 		// A CHECK_MONSTER_CHALLENGE_TIME {Forgotten Temple type}
 		case "CHECK_MONSTER_CHALLENGE_TIME"_djb2:
@@ -153,6 +154,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 1;
 			break;
 
+#if 0 // TODO
 		// A CHECK_PPCARD_SERIAL
 		case "CHECK_PPCARD_SERIAL"_djb2:
 			m_LogicElse = LOGIC_CHECK_PPCARD_SERIAL;
@@ -172,13 +174,11 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 2;
 			break;
 
-#if 0 // TODO
 		// A CHECK_ITEMCHANGE_NUM {last slot rewarded by exchange - 1..5 [nExchangeItemNum1..5]}
 		case "CHECK_ITEMCHANGE_NUM"_djb2:
 			m_LogicElse = LOGIC_CHECK_ITEMCHANGE_NUM;
 			argsToParse = 1;
 			break;
-#endif
 
 		// A CHECK_NOCLASS {class 1} {class 2} {class 3} {class 4} {class 5} {class 6}
 		case "CHECK_NOCLASS"_djb2:
@@ -216,7 +216,6 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
 
-#if 0 // TODO
 		// A CHECK_MIDDLE_STATUE_NOCAPTURE
 		case "CHECK_MIDDLE_STATUE_NOCAPTURE"_djb2:
 			m_LogicElse = LOGIC_CHECK_MIDDLE_STATUE_NOCAPTURE;
@@ -228,7 +227,6 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			m_LogicElse = LOGIC_CHECK_MIDDLE_STATUE_CAPTURE;
 			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
 			break;
-#endif
 
 		// A CHECK_EMPTY_SLOT {required number of empty slots}
 		case "CHECK_EMPTY_SLOT"_djb2:
@@ -236,7 +234,6 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 1;
 			break;
 
-#if 0 // TODO
 		// A CHECK_NO_CASTLE
 		case "CHECK_NO_CASTLE"_djb2:
 			m_LogicElse = LOGIC_CHECK_NO_CASTLE;
@@ -255,6 +252,7 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 1;
 			break;
 
+#if 0 // TODO
 		// A CHECK_STAT_TOTAL {minimum} {maximum}
 		case "CHECK_STAT_TOTAL"_djb2:
 			m_LogicElse = LOGIC_CHECK_STAT_TOTAL;
@@ -267,6 +265,21 @@ void LOGIC_ELSE::Parse_and(const char* line, const std::wstring& filename, int l
 			argsToParse = 2;
 			break;
 #endif // 0
+
+		// A CHECK_BEEF_ROAST_KARUS_VICTORY
+		case "CHECK_BEEF_ROAST_KARUS_VICTORY"_djb2:
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
+			break;
+
+		// A CHECK_BEEF_ROAST_ELMORAD_VICTORY
+		case "CHECK_BEEF_ROAST_ELMORAD_VICTORY"_djb2:
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
+			break;
+
+		// A CHECK_BEEF_ROAST_NO_VICTORY
+		case "CHECK_BEEF_ROAST_NO_VICTORY"_djb2:
+			argsToParse = 1; // officially it always parses 1 even though it doesn't use it
+			break;
 
 		default:
 			spdlog::warn("LOGIC_ELSE::Parse_and: unhandled opcode '{}' ({}:{})", temp, WideToUtf8(filename), lineNumber);

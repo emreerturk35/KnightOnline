@@ -173,6 +173,8 @@ void CUser::Initialize()
 	m_byKnightsRank = 0;
 	m_byPersonalRank = 0;
 
+	m_byLastExchangeNum = 0;
+
 	CIOCPSocket2::Initialize();
 }
 
@@ -11530,7 +11532,7 @@ bool CUser::CheckEventLogic(const EVENT_DATA* pEventData)
 				break;
 
 			case LOGIC_CHECK_NATION:
-				if(m_pUserData->m_bNation == pLE->m_LogicElseInt[0])
+				if (m_pUserData->m_bNation == pLE->m_LogicElseInt[0])
 					bExact = true;
 				break;
 
@@ -11554,9 +11556,25 @@ bool CUser::CheckEventLogic(const EVENT_DATA* pEventData)
 					bExact = true;
 				break;
 
+			case LOGIC_CHECK_MIDDLE_STATUE_CAPTURE:
+				if (CheckMiddleStatueCapture())
+					bExact = true; // NOTE: officially this returns true, ending check processing immediately
+				break;
+
+			case LOGIC_CHECK_MIDDLE_STATUE_NOCAPTURE:
+				if (!CheckMiddleStatueCapture())
+					bExact = true; // NOTE: officially this returns true, ending check processing immediately
+				break;
+
 			case LOGIC_CHECK_EMPTY_SLOT:
 				if (GetNumberOfEmptySlots() >= pLE->m_LogicElseInt[0])
-					bExact = true;
+					bExact = true; // NOTE: officially this returns true, ending check processing immediately
+				break;
+
+			case LOGIC_CHECK_MONSTER_CHALLENGE_TIME:
+				if (m_pMain->_monsterChallengeActiveType == pLE->m_LogicElseInt[0]
+					&& m_pMain->_monsterChallengeState != 0)
+					bExact = true; // NOTE: officially this returns true, ending check processing immediately
 				break;
 
 			case LOGIC_CHECK_EXIST_EVENT:
@@ -11569,8 +11587,48 @@ bool CUser::CheckEventLogic(const EVENT_DATA* pEventData)
 					bExact = true;
 				break;
 
+			case LOGIC_CHECK_ITEMCHANGE_NUM:
+				if (m_byLastExchangeNum == pLE->m_LogicElseInt[0])
+					bExact = true;
+				break;
+
 			case LOGIC_CHECK_KNIGHT:
 				if (CheckKnight())
+					bExact = true;
+				break;
+
+			case LOGIC_CHECK_NO_CASTLE:
+				if (m_pUserData->m_bKnights != m_pMain->m_KnightsSiegeWar._masterKnights
+					|| m_pMain->m_KnightsSiegeWar._masterKnights == 0
+					|| m_pUserData->m_bFame != CHIEF)
+					bExact = true; // NOTE: officially this returns true, ending check processing immediately
+				break;
+
+			case LOGIC_CHECK_CASTLE:
+				if (m_pUserData->m_bKnights == m_pMain->m_KnightsSiegeWar._masterKnights
+					&& m_pMain->m_KnightsSiegeWar._masterKnights > 0
+					&& m_pUserData->m_bFame == CHIEF)
+					bExact = true; // NOTE: officially this returns true, ending check processing immediately
+				break;
+
+			case LOGIC_CHECK_MONSTER_CHALLENGE_USERCOUNT:
+				if (m_pMain->_monsterChallengePlayerCount > pLE->m_LogicElseInt[0])
+					bExact = true; // NOTE: officially this returns true, ending check processing immediately
+				break;
+
+			case LOGIC_CHECK_BEEF_ROAST_KARUS_VICTORY:
+				if (m_pMain->_beefRoastVictoryType == BEEF_ROAST_VICTORY_KARUS)
+					bExact = true;
+				break;
+
+			case LOGIC_CHECK_BEEF_ROAST_ELMORAD_VICTORY:
+				if (m_pMain->_beefRoastVictoryType == BEEF_ROAST_VICTORY_ELMORAD)
+					bExact = true;
+				break;
+
+			case LOGIC_CHECK_BEEF_ROAST_NO_VICTORY:
+				if (m_pMain->_beefRoastVictoryType != BEEF_ROAST_VICTORY_KARUS
+					&& m_pMain->_beefRoastVictoryType != BEEF_ROAST_VICTORY_ELMORAD)
 					bExact = true;
 				break;
 
@@ -12981,4 +13039,24 @@ void CUser::SetZoneAbilityChange(int zone)
 	SetByte(send_buff, bCanTalkToOtherNation, send_index);
 	SetShort(send_buff, sTariff, send_index);
 	Send(send_buff, send_index);
+}
+
+bool CUser::CheckMiddleStatueCapture() const
+{
+	uint8_t lastCapturedNation;
+	switch (m_pUserData->m_bNation)
+	{
+		case KARUS:
+			lastCapturedNation = m_pMain->_elmoradInvasionMonumentLastCapturedNation[INVASION_MONUMENT_DODA];
+			break;
+
+		case ELMORAD:
+			lastCapturedNation = m_pMain->_karusInvasionMonumentLastCapturedNation[INVASION_MONUMENT_DODA];
+			break;
+
+		default:
+			return false;
+	}
+
+	return lastCapturedNation == m_pUserData->m_bNation;
 }
