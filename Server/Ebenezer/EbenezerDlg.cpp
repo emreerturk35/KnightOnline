@@ -218,6 +218,12 @@ CEbenezerDlg::CEbenezerDlg(CWnd* pParent /*=nullptr*/)
 	m_sKarusDead = 0;
 	m_sElmoradDead = 0;
 
+	for (int i = 0; i < INVASION_MONUMENT_COUNT; i++)
+	{
+		_karusInvasionMonumentLastCapturedNation[i] = 0;
+		_elmoradInvasionMonumentLastCapturedNation[i] = 0;
+	}
+
 	m_bVictory = 0;
 	m_byOldVictory = 0;
 	m_byBattleSave = 0;
@@ -268,6 +274,12 @@ CEbenezerDlg::CEbenezerDlg(CWnd* pParent /*=nullptr*/)
 	memset(m_strElmoradCaptain, 0, sizeof(m_strElmoradCaptain));
 
 	m_bySanta = 0;		// 갓댐 산타!!! >.<
+
+	_beefRoastVictoryType = BEEF_ROAST_VICTORY_PENDING_RESTART_AFTER_VICTORY;
+
+	_monsterChallengeActiveType = 0;
+	_monsterChallengeState = 0;
+	_monsterChallengePlayerCount = 0;
 
 	ConnectionManager::Create();
 }
@@ -497,6 +509,15 @@ BOOL CEbenezerDlg::OnInitDialog()
 	{
 		spdlog::error("EbenezerDlg::OnInitDialog: failed to cache KNIGHTS_USER table, closing");
 		AfxMessageBox(_T("LoadAllKnightsUserData Load Fail"));
+		AfxPostQuitMessage(0);
+		return FALSE;
+	}
+
+	spdlog::info("EbenezerDlg::OnInitDialog: loading KNIGHTS_SIEGE_WARFARE table");
+	if (!LoadKnightsSiegeWarfareTable())
+	{
+		spdlog::error("EbenezerDlg::OnInitDialog: failed to cache KNIGHTS_SIEGE_WARFARE table, closing");
+		AfxMessageBox(_T("LoadKnightsSiegeWarfareTable Load Fail"));
 		AfxPostQuitMessage(0);
 		return FALSE;
 	}
@@ -3216,6 +3237,32 @@ bool CEbenezerDlg::LoadAllKnightsUserData()
 			rtrim(row.UserId);
 #endif
 			m_KnightsManager.AddKnightsUser(row.KnightsId, row.UserId.c_str());
+		}
+		while (recordset.next());
+	});
+
+	if (!loader.Load_AllowEmpty())
+	{
+		ReportTableLoadError(loader.GetError(), __func__);
+		return false;
+	}
+
+	return true;
+}
+
+bool CEbenezerDlg::LoadKnightsSiegeWarfareTable()
+{
+	using ModelType = model::KnightsSiegeWarfare;
+
+	recordset_loader::Base<ModelType> loader;
+	loader.SetProcessFetchCallback([this](db::ModelRecordSet<ModelType>& recordset)
+	{
+		do
+		{
+			ModelType row = {};
+			recordset.get_ref(row);
+			m_KnightsSiegeWar._castleIndex		= row.CastleIndex;
+			m_KnightsSiegeWar._masterKnights	= row.MasterKnights;
 		}
 		while (recordset.next());
 	});
